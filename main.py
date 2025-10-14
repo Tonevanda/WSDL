@@ -16,6 +16,8 @@ def main():
 
     print(xml_obj.get_string())
 
+    print("Finished")
+
 
 if __name__ == "__main__":
     main()
