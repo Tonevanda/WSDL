@@ -1,5 +1,5 @@
 import requests
-from xml_object import XMLObject
+from src.xml_object import XMLObject
 
 def main():
 
