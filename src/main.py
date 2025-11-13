@@ -1,5 +1,5 @@
 import requests
-from src.xml_object import XMLObject
+from xml_object import XMLObject
 
 def main():
 
@@ -12,7 +12,7 @@ def main():
     # Remove BOM
     cleaned_data = XMLObject.remove_bom(response.text)
 
-    xml_obj = XMLObject(XMLObject.toTreeElement(cleaned_data), cleaned_data)
+    xml_obj = XMLObject(cleaned_data)
 
     print(xml_obj.get_string())
 

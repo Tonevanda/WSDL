@@ -13,40 +13,44 @@ class XMLObject:
     element: ET.Element     # Represents the element representation of an XML object using ElementTree
     string: str             # Represents the string representation of an XML object
 
+    def __init__(self, data: str):
+        self.element = XMLObject.toTreeElement(data)
+        self.string = data
+
     @staticmethod
-    def print_element(element: ET.Element):
+    def print_element(element: ET.Element) -> None:
         """
         Print the element and its children.
         """
         logger.debug(ET.tostring(element).decode())
 
     @staticmethod
-    def remove_bom(xml_string: str):
+    def remove_bom(xml_string: str) -> str:
         """
         Remove the Byte Order Mark (BOM) from an XML string.
         """
         return xml_string[3:]
     
     @staticmethod
-    def toTreeElement(xml_string: str):
+    def toTreeElement(xml_string: str) -> ET.Element:
         """
         Parse an XML string and return the root element of the tree.
         """
         return ET.fromstring(xml_string)
 
-    def get_string(self):
+    def get_string(self) -> str:
         """
         Get the string representation of the XML object.
         """
         return self.string.encode('latin1').decode('utf-8') if self.string else None
     
-    def get_tree_element(self):
+    def get_tree_element(self) -> ET.Element:
         """
         Get the tree element representation of the XML object.
         """
         return self.element
     
-    def find_first_element_by_name(self, element_name: str):
+    def find_first_element_by_name(self, element_name: str) -> 'XMLObject':
         """
         Find the first element with the given name in an XML string.
         If Parsing Error occurs, print the error and the first 100 characters of the XML.
@@ -64,7 +68,7 @@ class XMLObject:
             logger.error(f"First 100 characters of XML: {repr(self.get_tree_element()[:100])}")
             raise
     
-    def find_elements_by_name(self , element_name: str):
+    def find_elements_by_name(self , element_name: str) -> list['XMLObject']:
         """
         Find all elements with a given name in an XML string.
         If Parsing Error occurs, print the error and the first 100 characters of the XML.
