@@ -95,40 +95,25 @@ def get_legislature_info(xml_obj: XMLObject):
 
     return id, start_date, end_date, display_start_date, display_end_date, ended
 
+def get_electoral_circles_info(xml_obj: XMLObject):
+    def get_id(circle: XMLObject):
+        element = circle.find_first_element_by_name('cpId')
+        return element.get_string() if element else None
+    def get_name(circle: XMLObject):
+        element = circle.find_first_element_by_name('cpDes')
+        return element.get_string() if element else None
 
-    """
-    """
+    element = xml_obj.find_first_element_by_name('CirculosEleitorais')
 
-#ef build_legislature(xml_obj: XMLObject):
-#   """
-#   Build a Legislatura object from the XML tree.
-#   """
-#
-#   legislature_element = xml_obj.find_first_element_by_name('DetalheLegislatura')
-#
-#   # Get the general information
-#   bid, id, start_date, end_date, display_start_date, display_end_date, ended = get_legislature_info(legislature_element)
-#
-#   # Get the parties
-#   parties = get_parties(xml_obj)
-#
-#   # Get the legNumber from the ID
-#   leg_number = get_leg_number(id)
-#
-#   # Create the Legislatura object
-#   legislatura = Legislatura(
-#       BID=bid,
-#       id=id,
-#       startDate=start_date,
-#       endDate=end_date,
-#       displayStartDate=display_start_date,
-#       displayEndDate=display_end_date,
-#       parties=parties,
-#       ended=ended,
-#       legNumber=leg_number
-#   )
-#
-#   legislatura.store()
+    circles_map = {}
+    for circle in element.find_elements_by_name('pt_ar_wsgode_objectos_DadosCirculoEleitoralList'):
+        id = get_id(circle)
+        name = get_name(circle)
+        if id:
+            circles_map[id] = name
+    
+    return circles_map
+
 
 def build_legislature(xml_obj:XMLObject, g:Graph):
     legislature_element = xml_obj.find_first_element_by_name('DetalheLegislatura')
@@ -160,4 +145,19 @@ def build_parliamentary_groups(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((party_uri, SKOS.altLabel, Literal(party_id, lang="pt")))
         g.add((party_uri, POLI.representedInLegislature, leg_uri))
 
+    return g
+
+def build_electoral_circles(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
+    circles = get_electoral_circles_info(xml_obj)
+    leg_id = str(leg_uri).split('/')[-1]
+
+    for id, name in circles.items():
+        uri_name = name.replace(' ', '_')
+
+        uri = POLI[f"{uri_name}_{leg_id}"]
+        g.add((uri, RDF.type, POLI.ElectoralCircle))
+        g.add((uri, RDFS.label, Literal(name, lang="pt")))
+        g.add((uri, DCTERMS.identifier, Literal(id, datatype=XSD.float)))
+        g.add((uri, POLI.inLegislature, leg_uri))
+    
     return g

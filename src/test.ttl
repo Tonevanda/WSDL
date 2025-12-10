@@ -16,12 +16,37 @@ dct:identifier a owl:DatatypeProperty ;
 
 <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology> a owl:Ontology .
 
+:Aveiro_XVII a :ElectoralCircle ;
+    rdfs:label "Aveiro"@pt ;
+    dct:identifier "1.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Açores_XVII a :ElectoralCircle ;
+    rdfs:label "Açores"@pt ;
+    dct:identifier "19.0"^^xsd:float ;
+    :inLegislature :XVII .
+
 :BE_XVII a :ParliamentaryGroup ;
     rdfs:label "Bloco De Esquerda during the XVII Legislature"@en,
         "Bloco De Esquerda durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "BE"@pt ;
     skos:prefLabel "Bloco De Esquerda"@pt .
+
+:Beja_XVII a :ElectoralCircle ;
+    rdfs:label "Beja"@pt ;
+    dct:identifier "2.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Braga_XVII a :ElectoralCircle ;
+    rdfs:label "Braga"@pt ;
+    dct:identifier "3.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Bragança_XVII a :ElectoralCircle ;
+    rdfs:label "Bragança"@pt ;
+    dct:identifier "4.0"^^xsd:float ;
+    :inLegislature :XVII .
 
 :CDS-PP_XVII a :ParliamentaryGroup ;
     rdfs:label "Centro Democrático Social - Partido Popular during the XVII Legislature"@en,
@@ -36,6 +61,36 @@ dct:identifier a owl:DatatypeProperty ;
     :representedInLegislature :XVII ;
     skos:altLabel "CH"@pt ;
     skos:prefLabel "Chega"@pt .
+
+:Castelo_Branco_XVII a :ElectoralCircle ;
+    rdfs:label "Castelo Branco"@pt ;
+    dct:identifier "5.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Coimbra_XVII a :ElectoralCircle ;
+    rdfs:label "Coimbra"@pt ;
+    dct:identifier "6.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Europa_XVII a :ElectoralCircle ;
+    rdfs:label "Europa"@pt ;
+    dct:identifier "21.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Faro_XVII a :ElectoralCircle ;
+    rdfs:label "Faro"@pt ;
+    dct:identifier "8.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Fora_da_Europa_XVII a :ElectoralCircle ;
+    rdfs:label "Fora da Europa"@pt ;
+    dct:identifier "22.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Guarda_XVII a :ElectoralCircle ;
+    rdfs:label "Guarda"@pt ;
+    dct:identifier "9.0"^^xsd:float ;
+    :inLegislature :XVII .
 
 :IL_XVII a :ParliamentaryGroup ;
     rdfs:label "Iniciativa Liberal during the XVII Legislature"@en,
@@ -57,6 +112,21 @@ dct:identifier a owl:DatatypeProperty ;
     :representedInLegislature :XVII ;
     skos:altLabel "L"@pt ;
     skos:prefLabel "Livre"@pt .
+
+:Leiria_XVII a :ElectoralCircle ;
+    rdfs:label "Leiria"@pt ;
+    dct:identifier "10.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Lisboa_XVII a :ElectoralCircle ;
+    rdfs:label "Lisboa"@pt ;
+    dct:identifier "11.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Madeira_XVII a :ElectoralCircle ;
+    rdfs:label "Madeira"@pt ;
+    dct:identifier "20.0"^^xsd:float ;
+    :inLegislature :XVII .
 
 :PAN_XVII a :ParliamentaryGroup ;
     rdfs:label "Pessoas-Animais-Natureza during the XVII Legislature"@en,
@@ -85,6 +155,41 @@ dct:identifier a owl:DatatypeProperty ;
     :representedInLegislature :XVII ;
     skos:altLabel "PS"@pt ;
     skos:prefLabel "Partido Socialista"@pt .
+
+:Portalegre_XVII a :ElectoralCircle ;
+    rdfs:label "Portalegre"@pt ;
+    dct:identifier "12.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Porto_XVII a :ElectoralCircle ;
+    rdfs:label "Porto"@pt ;
+    dct:identifier "13.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Santarém_XVII a :ElectoralCircle ;
+    rdfs:label "Santarém"@pt ;
+    dct:identifier "14.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Setúbal_XVII a :ElectoralCircle ;
+    rdfs:label "Setúbal"@pt ;
+    dct:identifier "15.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Viana_do_Castelo_XVII a :ElectoralCircle ;
+    rdfs:label "Viana do Castelo"@pt ;
+    dct:identifier "16.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Vila_Real_XVII a :ElectoralCircle ;
+    rdfs:label "Vila Real"@pt ;
+    dct:identifier "17.0"^^xsd:float ;
+    :inLegislature :XVII .
+
+:Viseu_XVII a :ElectoralCircle ;
+    rdfs:label "Viseu"@pt ;
+    dct:identifier "18.0"^^xsd:float ;
+    :inLegislature :XVII .
 
 :electedIn a owl:FunctionalProperty,
         owl:ObjectProperty ;
@@ -137,6 +242,11 @@ dct:identifier a owl:DatatypeProperty ;
     rdfs:domain :MoP ;
     rdfs:range :Legislature .
 
+:Évora_XVII a :ElectoralCircle ;
+    rdfs:label "Évora"@pt ;
+    dct:identifier "7.0"^^xsd:float ;
+    :inLegislature :XVII .
+
 rdfs:label a owl:DatatypeProperty ;
     rdfs:domain :ElectoralCircle,
         :MoPDuty,
@@ -186,8 +296,6 @@ m4sc:Parlamentarian a owl:Class .
 
 schema:Person a owl:Class .
 
-:ElectoralCircle a owl:Class .
-
 :LegislativeSession a owl:Class .
 
 :MoPSituation a owl:Class .
@@ -202,13 +310,15 @@ schema:Person a owl:Class .
     owl:equivalentClass ocd:Deputato,
         m4sc:Parlamentarian .
 
+:ParliamentaryGroup a owl:Class ;
+    owl:equivalentClass ocd:gruppoParlamentare .
+
+:ElectoralCircle a owl:Class .
+
 :XVII a :Legislature ;
     rdfs:label "XVII Legislature"@en,
         "XVII Legislatura"@pt ;
     schema:endDate "None"^^xsd:date ;
     schema:position "17"^^xsd:int ;
     schema:startDate "2025-06-03T00:00:00"^^xsd:date .
-
-:ParliamentaryGroup a owl:Class ;
-    owl:equivalentClass ocd:gruppoParlamentare .
 
