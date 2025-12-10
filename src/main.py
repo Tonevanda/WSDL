@@ -1,6 +1,6 @@
 import requests
-from owlready2 import *
 from xml_object import XMLObject
+from onto import defineOntology
 
 def main():
 
@@ -18,75 +18,8 @@ def main():
 
     #xml_obj = XMLObject(cleaned_data)
 
-    onto = get_ontology("http://example.org/PoliOntology.owl")
-
-    with onto:
-        schema = get_ontology("https://schema.org/version/latest/schemaorg-current-https.ttl").load()
-        ocd = get_ontology("https://dati.camera.it/ocd/classi.rdf").load()
-        popolo_event = get_ontology("https://www.popoloproject.com/examples/event.ttl").load()
-
-        # ---------- CLASSES ---------- #
-
-        class MoP(schema.Person):
-            equivalent_to = [ocd.Deputato]
-
-        class Legislature(Thing):
-            equivalent_to = [ocd.Legislatura]
-
-        class ParliamentaryGroup(Thing):
-            equivalent_to = [ocd.gruppoParlamentare]
-
-        class ElectoralCircle(Thing):
-            pass
-
-        # ---------- OBJECT PROPERTIES ---------- #
-
-        class isMemberOf(MoP >> ParliamentaryGroup):
-            pass
-
-        class electedIn(MoP >> ElectoralCircle):
-            pass
-
-        class servesDuring(MoP >> Legislature):
-            pass
-
-        class hasLegislativeSession(Legislature >> popolo_event.Event):
-            pass
-
-        class inLegislature(ElectoralCircle >> Legislature):
-            pass
-
-        # ---------- DATA PROPERTIES ---------- #
-
-        class mopBid(DataProperty, FunctionalProperty):
-            domain = [MoP]
-            range = [int]
-            label = "ID do deputado@pt"
-
-        class mopUsername(DataProperty, FunctionalProperty):
-            domain = [MoP]
-            range = [str]
-            label = "Nome de Utilizador do deputado@pt"
-
-        class parliamentaryGroupName(DataProperty, FunctionalProperty):
-            domain = [ParliamentaryGroup]
-            range = [str]
-            label = "Nome do grupo parlamentar@pt"
-        
-        class parliamentaryGroupAcronym(DataProperty, FunctionalProperty):
-            domain = [ParliamentaryGroup]
-            range = [str]
-            label = "Sigla do grupo parlamentar@pt"
-        
-        class electoralCircleName(DataProperty, FunctionalProperty):
-            domain = [ElectoralCircle]
-            range = [str]
-            label = "Nome do círculo eleitoral@pt"
-        
-        class electoralCircleCode(DataProperty, FunctionalProperty):
-            domain = [ElectoralCircle]
-            range = [str]
-            label = "Código do círculo eleitoral@pt"
+    onto = defineOntology()
+    onto.save("poliontoly.rdf",)
 
 if __name__ == "__main__":
     main()
