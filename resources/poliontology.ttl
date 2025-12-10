@@ -160,12 +160,15 @@ foaf:accountName rdf:type owl:DatatypeProperty ;
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#Legislature
-:Legislature rdf:type owl:Class .
+:Legislature rdf:type owl:Class ;
+     owl:equivalentClass ocd:Legislatura .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#MoP
 :MoP rdf:type owl:Class ;
-     rdfs:subClassOf schema:Person .
+     rdfs:subClassOf schema:Person ;
+     owl:equivalentClass m4sc:Parlamentarian ;
+     owl:equivalentClass ocd:Deputato .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#MoPDuty
@@ -177,7 +180,8 @@ foaf:accountName rdf:type owl:DatatypeProperty ;
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#ParliamentaryGroup
-:ParliamentaryGroup rdf:type owl:Class .
+:ParliamentaryGroup rdf:type owl:Class ;
+     owl:equivalentClass ocd:gruppoParlamentare .
 
 
 ###  https://schema.org/Person
