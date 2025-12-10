@@ -10,4 +10,5 @@ dependencies = [
     "owlready2>=0.49",
     "rdflib>=7.5.0",
     "requests>=2.32.5",
+    "roman>=5.2",
 ]

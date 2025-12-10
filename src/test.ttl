@@ -6,6 +6,7 @@
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix schema: <https://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 dct:identifier a owl:DatatypeProperty ;
@@ -13,53 +14,67 @@ dct:identifier a owl:DatatypeProperty ;
         :MoP,
         :MoPDuty .
 
-<http://schema.org/endDate> a owl:DatatypeProperty ;
-    rdfs:domain :LegislativeSession,
-        :Legislature,
-        :MoPDuty,
-        :MoPSituation .
-
-<http://schema.org/position> a owl:DatatypeProperty ;
-    rdfs:domain :LegislativeSession,
-        :Legislature .
-
-<http://schema.org/startDate> a owl:DatatypeProperty ;
-    rdfs:domain :LegislativeSession,
-        :Legislature,
-        :MoPDuty,
-        :MoPSituation .
-
 <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology> a owl:Ontology .
 
-:BE a :ParliamentaryGroup ;
-    rdfs:label "Bloco De Esquerda"@pt .
+:BE_XVII a :ParliamentaryGroup ;
+    rdfs:label "Bloco De Esquerda na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "BE"@pt ;
+    skos:prefLabel "Bloco De Esquerda"@pt .
 
-:CDS-PP a :ParliamentaryGroup ;
-    rdfs:label "Centro Democrático Social - Partido Popular"@pt .
+:CDS-PP_XVII a :ParliamentaryGroup ;
+    rdfs:label "Centro Democrático Social - Partido Popular na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "CDS-PP"@pt ;
+    skos:prefLabel "Centro Democrático Social - Partido Popular"@pt .
 
-:CH a :ParliamentaryGroup ;
-    rdfs:label "Chega"@pt .
+:CH_XVII a :ParliamentaryGroup ;
+    rdfs:label "Chega na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "CH"@pt ;
+    skos:prefLabel "Chega"@pt .
 
-:IL a :ParliamentaryGroup ;
-    rdfs:label "Iniciativa Liberal"@pt .
+:IL_XVII a :ParliamentaryGroup ;
+    rdfs:label "Iniciativa Liberal na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "IL"@pt ;
+    skos:prefLabel "Iniciativa Liberal"@pt .
 
-:JPP a :ParliamentaryGroup ;
-    rdfs:label "Juntos Pelo Povo"@pt .
+:JPP_XVII a :ParliamentaryGroup ;
+    rdfs:label "Juntos Pelo Povo na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "JPP"@pt ;
+    skos:prefLabel "Juntos Pelo Povo"@pt .
 
-:L a :ParliamentaryGroup ;
-    rdfs:label "Livre"@pt .
+:L_XVII a :ParliamentaryGroup ;
+    rdfs:label "Livre na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "L"@pt ;
+    skos:prefLabel "Livre"@pt .
 
-:PAN a :ParliamentaryGroup ;
-    rdfs:label "Pessoas-Animais-Natureza"@pt .
+:PAN_XVII a :ParliamentaryGroup ;
+    rdfs:label "Pessoas-Animais-Natureza na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "PAN"@pt ;
+    skos:prefLabel "Pessoas-Animais-Natureza"@pt .
 
-:PCP a :ParliamentaryGroup ;
-    rdfs:label "Partido Comunista Português"@pt .
+:PCP_XVII a :ParliamentaryGroup ;
+    rdfs:label "Partido Comunista Português na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "PCP"@pt ;
+    skos:prefLabel "Partido Comunista Português"@pt .
 
-:PS a :ParliamentaryGroup ;
-    rdfs:label "Partido Socialista"@pt .
+:PSD_XVII a :ParliamentaryGroup ;
+    rdfs:label "Partido Social Democrata na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "PSD"@pt ;
+    skos:prefLabel "Partido Social Democrata"@pt .
 
-:PSD a :ParliamentaryGroup ;
-    rdfs:label "Partido Social Democrata"@pt .
+:PS_XVII a :ParliamentaryGroup ;
+    rdfs:label "Partido Socialista na XVII Legislatura"@pt ;
+    :representedInLegislature :XVII ;
+    skos:altLabel "PS"@pt ;
+    skos:prefLabel "Partido Socialista"@pt .
 
 :electedIn a owl:FunctionalProperty,
         owl:ObjectProperty ;
@@ -102,6 +117,11 @@ dct:identifier a owl:DatatypeProperty ;
     rdfs:domain :MoP ;
     rdfs:range xsd:string .
 
+:representedInLegislature a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:domain :ParliamentaryGroup ;
+    rdfs:range :Legislature .
+
 :servesDuring a owl:FunctionalProperty,
         owl:ObjectProperty ;
     rdfs:domain :MoP ;
@@ -114,13 +134,32 @@ rdfs:label a owl:DatatypeProperty ;
 
 owl:topDataProperty rdfs:subPropertyOf :bid .
 
+skos:altLabel a owl:DatatypeProperty ;
+    rdfs:domain :ParliamentaryGroup .
+
+skos:prefLabel a owl:DatatypeProperty ;
+    rdfs:domain :ParliamentaryGroup .
+
 foaf:accountName a owl:DatatypeProperty ;
     rdfs:domain :MoP .
 
-:InterestRegistry a owl:Class,
-        owl:NamedIndividual ;
-    rdfs:label "Interest Registry"@en,
-        "Registo de Interesses"@pt .
+schema:endDate a owl:DatatypeProperty ;
+    rdfs:domain :LegislativeSession,
+        :Legislature,
+        :MoPDuty,
+        :MoPSituation .
+
+schema:position a owl:DatatypeProperty ;
+    rdfs:domain :LegislativeSession,
+        :Legislature .
+
+schema:startDate a owl:DatatypeProperty ;
+    rdfs:domain :LegislativeSession,
+        :Legislature,
+        :MoPDuty,
+        :MoPSituation .
+
+:InterestRegistry a owl:Class .
 
 :bid a owl:DatatypeProperty,
         owl:FunctionalProperty ;
@@ -152,6 +191,12 @@ schema:Person a owl:Class .
     rdfs:subClassOf schema:Person ;
     owl:equivalentClass ocd:Deputato,
         m4sc:Parlamentarian .
+
+:XVII a :Legislature ;
+    rdfs:label "Legislatura XVII"@pt ;
+    schema:endDate "None"^^xsd:date ;
+    schema:position "17"^^xsd:int ;
+    schema:startDate "2025-06-03T00:00:00"^^xsd:date .
 
 :ParliamentaryGroup a owl:Class ;
     owl:equivalentClass ocd:gruppoParlamentare .

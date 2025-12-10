@@ -1,12 +1,14 @@
 from datetime import datetime
-#from roman import fromRoman, InvalidRomanNumeralError
+from roman import fromRoman, InvalidRomanNumeralError
 import xml.etree.ElementTree as ET
 from rdflib import *
 from xml_object import XMLObject
+
 POLI = Namespace("http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/")
+SCHEMA = Namespace("https://schema.org/")
 #from database.legislatura import Legislatura
 
-"""def get_leg_number(id: str):
+def get_leg_number(id: str):
 
     #Convert a Roman numeral ID to an integer.
     #Returns None if the ID is not a valid Roman numeral.
@@ -15,7 +17,7 @@ POLI = Namespace("http://www.semanticweb.org/tiago/ontologies/2025/11/poliontolo
         return fromRoman(id) if id else None
     except InvalidRomanNumeralError:
         return None
-"""
+
 
 def get_bid(xml_obj: XMLObject):
     """
@@ -81,7 +83,7 @@ def get_legislature_info(xml_obj: XMLObject):
     """
 
     # Get the ID, like "XVI"
-    bid = get_bid(xml_obj)
+    #bid = get_bid(xml_obj)
     id = get_id(xml_obj)
     display_start_date = get_start_date(xml_obj)
     display_end_date = get_end_date(xml_obj)
@@ -91,7 +93,7 @@ def get_legislature_info(xml_obj: XMLObject):
     start_date = datetime.fromtimestamp(datetime.strptime(display_start_date, "%Y-%m-%d").timestamp()) if display_start_date else None
     end_date = datetime.fromtimestamp(datetime.strptime(display_end_date, "%Y-%m-%d").timestamp()) if display_end_date else None
 
-    return bid, id, start_date, end_date, display_start_date, display_end_date, ended
+    return id, start_date, end_date, display_start_date, display_end_date, ended
 
 
     """
@@ -128,20 +130,32 @@ def get_legislature_info(xml_obj: XMLObject):
 #
 #   legislatura.store()
 
-#def retrieve_informacaobase(xml_obj: XMLObject):
-#    """
-#    Get the legislatures from the XML file.
-#    """
-#
-#    build_legislature(xml_obj)
+def build_legislature(xml_obj:XMLObject, g:Graph):
+    legislature_element = xml_obj.find_first_element_by_name('DetalheLegislatura')
 
+    # Get the general information
+    id, start_date, end_date, display_start_date, display_end_date, ended = get_legislature_info(legislature_element)
 
-def build_parliamentary_groups(xml_obj: XMLObject, g:Graph):
+    legislature_uri = POLI[id]
+    g.add((legislature_uri, RDF.type, POLI.Legislature))
+    g.add((legislature_uri, RDFS.label, Literal("Legislatura "+id, lang="pt")))
+    g.add((legislature_uri, SCHEMA.position, Literal(get_leg_number(id), datatype=XSD.int)))
+    g.add((legislature_uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
+    if not ended: g.add((legislature_uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+
+    return g, legislature_uri
+
+def build_parliamentary_groups(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
     parliamentary_groups = get_parties(xml_obj)
+    leg_id = str(leg_uri).split('/')[-1]
+
 
     for party_id, party_name in parliamentary_groups.items():
-        party_uri = POLI[party_id]
+        party_uri = POLI[f"{party_id}_{leg_id}"]
         g.add((party_uri, RDF.type, POLI.ParliamentaryGroup))
-        g.add((party_uri, RDFS.label, Literal(party_name, lang="pt"))) 
+        g.add((party_uri, RDFS.label, Literal(f"{party_name} na {leg_id} Legislatura", lang="pt")))
+        g.add((party_uri, SKOS.prefLabel, Literal(party_name, lang="pt")))
+        g.add((party_uri, SKOS.altLabel, Literal(party_id, lang="pt")))
+        g.add((party_uri, POLI.representedInLegislature, leg_uri))
 
     return g
