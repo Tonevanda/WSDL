@@ -114,6 +114,36 @@ def get_electoral_circles_info(xml_obj: XMLObject):
     
     return circles_map
 
+def get_legislative_session_info(xml_obj: XMLObject):
+    def get_session_start_date(session: XMLObject):
+        element = session.find_first_element_by_name('dataInicio')
+        return element.get_string() if element else None
+    def get_session_end_date(session: XMLObject):
+        element = session.find_first_element_by_name('dataFim')
+        return element.get_string() if element else None
+    def get_session_number(session: XMLObject):
+        element = session.find_first_element_by_name('numSessao')
+        return element.get_string() if element else None
+
+    element = xml_obj.find_first_element_by_name('SessoesLegislativas')
+
+    
+
+    session_map = {}
+    for session in element.find_elements_by_name('pt_gov_ar_objectos_SessaoLegislativaOut'):
+        display_start_date = get_session_start_date(session)
+        display_end_date = get_session_end_date(session)
+        ended = True if display_end_date else False
+
+        number = get_session_number(session)
+
+        # Get the start and end dates in timestamp format
+        start_date = datetime.fromtimestamp(datetime.strptime(display_start_date, "%Y-%m-%d").timestamp()) if display_start_date else None
+        end_date = datetime.fromtimestamp(datetime.strptime(display_end_date, "%Y-%m-%d").timestamp()) if display_end_date else None
+
+        session_map[number] = start_date, end_date, ended
+
+    return session_map
 
 def build_legislature(xml_obj:XMLObject, g:Graph):
     legislature_element = xml_obj.find_first_element_by_name('DetalheLegislatura')
@@ -139,8 +169,8 @@ def build_parliamentary_groups(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
     for party_id, party_name in parliamentary_groups.items():
         party_uri = POLI[f"{party_id}_{leg_id}"]
         g.add((party_uri, RDF.type, POLI.ParliamentaryGroup))
-        g.add((party_uri, RDFS.label, Literal(f"{party_name} durante a {leg_id} Legislatura", lang="pt")))
-        g.add((party_uri, RDFS.label, Literal(f"{party_name} during the {leg_id} Legislature", lang="en")))
+        g.add((party_uri, RDFS.label, Literal(f"{party_name} durante a {leg_id} legislatura", lang="pt")))
+        g.add((party_uri, RDFS.label, Literal(f"{party_name} during the {leg_id} legislature", lang="en")))
         g.add((party_uri, SKOS.prefLabel, Literal(party_name, lang="pt")))
         g.add((party_uri, SKOS.altLabel, Literal(party_id, lang="pt")))
         g.add((party_uri, POLI.representedInLegislature, leg_uri))
@@ -160,4 +190,20 @@ def build_electoral_circles(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, DCTERMS.identifier, Literal(id, datatype=XSD.float)))
         g.add((uri, POLI.inLegislature, leg_uri))
     
+    return g
+
+def build_legislative_session(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
+    leg_id = str(leg_uri).split('/')[-1]
+    sessions = get_legislative_session_info(xml_obj)
+
+    for session, items in sessions.items():
+        uri = POLI[f"{session}_{leg_id}"]
+        g.add((uri, RDF.type, POLI.LegislativeSession))
+        g.add((uri, RDFS.label, Literal("Sessão legislativa número " + session + " da " + leg_id + " legislatura", lang="pt")))
+        g.add((uri, RDFS.label, Literal("Legislative session number " + session + " from the " + leg_id + " legislature", lang="en")))
+        g.add((uri, SCHEMA.position, Literal(session, datatype=XSD.int)))
+        g.add((uri, SCHEMA.startDate, Literal(items[0], datatype=XSD.date)))
+        if not items[2]: g.add((uri, SCHEMA.endDate, Literal(items[1], datatype=XSD.date)))
+        g.add((uri, POLI.duringLegislature, leg_uri))
+
     return g
