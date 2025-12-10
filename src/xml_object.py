@@ -13,9 +13,15 @@ class XMLObject:
     element: ET.Element     # Represents the element representation of an XML object using ElementTree
     string: str             # Represents the string representation of an XML object
 
-    def __init__(self, data: str):
-        self.element = XMLObject.toTreeElement(data)
-        self.string = data
+    def __init__(self, data: str | ET.Element, text: str = None):
+        if isinstance(data, str):
+            self.element = XMLObject.toTreeElement(data)
+            self.string = data
+        elif isinstance(data, ET.Element):
+            self.element = data
+            self.string = text if text is not None else ET.tostring(data, encoding='unicode')
+        else:
+            raise TypeError("data must be either a string or ET.Element")
 
     @staticmethod
     def print_element(element: ET.Element) -> None:

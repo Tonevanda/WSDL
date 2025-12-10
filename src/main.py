@@ -1,6 +1,6 @@
 import requests
 from xml_object import XMLObject
-from onto import defineOntology
+from converter import *
 
 def main():
 
@@ -14,12 +14,11 @@ def main():
         SystemExit("Failed to fetch data")
 
     # Remove BOM
-    cleaned_data = XMLObject.remove_bom(response.text)
+    cleaned_data : str = XMLObject.remove_bom(response.text)
 
-    #xml_obj = XMLObject(cleaned_data)
-
-    onto = defineOntology()
-    onto.save("poliontoly.rdf",)
+    xml_obj = XMLObject(cleaned_data)
+    
+    convert_to_rdf(xml_obj)
 
 if __name__ == "__main__":
     main()

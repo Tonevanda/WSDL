@@ -1,0 +1,158 @@
+@prefix : <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix m4sc: <https://example.org/map4scrutiny/core#> .
+@prefix ocd: <https://dati.camera.it/ocd/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+dct:identifier a owl:DatatypeProperty ;
+    rdfs:domain :ElectoralCircle,
+        :MoP,
+        :MoPDuty .
+
+<http://schema.org/endDate> a owl:DatatypeProperty ;
+    rdfs:domain :LegislativeSession,
+        :Legislature,
+        :MoPDuty,
+        :MoPSituation .
+
+<http://schema.org/position> a owl:DatatypeProperty ;
+    rdfs:domain :LegislativeSession,
+        :Legislature .
+
+<http://schema.org/startDate> a owl:DatatypeProperty ;
+    rdfs:domain :LegislativeSession,
+        :Legislature,
+        :MoPDuty,
+        :MoPSituation .
+
+<http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology> a owl:Ontology .
+
+:BE a :ParliamentaryGroup ;
+    rdfs:label "Bloco De Esquerda"@pt .
+
+:CDS-PP a :ParliamentaryGroup ;
+    rdfs:label "Centro Democrático Social - Partido Popular"@pt .
+
+:CH a :ParliamentaryGroup ;
+    rdfs:label "Chega"@pt .
+
+:IL a :ParliamentaryGroup ;
+    rdfs:label "Iniciativa Liberal"@pt .
+
+:JPP a :ParliamentaryGroup ;
+    rdfs:label "Juntos Pelo Povo"@pt .
+
+:L a :ParliamentaryGroup ;
+    rdfs:label "Livre"@pt .
+
+:PAN a :ParliamentaryGroup ;
+    rdfs:label "Pessoas-Animais-Natureza"@pt .
+
+:PCP a :ParliamentaryGroup ;
+    rdfs:label "Partido Comunista Português"@pt .
+
+:PS a :ParliamentaryGroup ;
+    rdfs:label "Partido Socialista"@pt .
+
+:PSD a :ParliamentaryGroup ;
+    rdfs:label "Partido Social Democrata"@pt .
+
+:electedIn a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:domain :MoP ;
+    rdfs:range :ElectoralCircle .
+
+:hasDuty a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:domain :MoP ;
+    rdfs:range :MoPDuty .
+
+:hasInterestRegistry a owl:FunctionalProperty,
+        owl:InverseFunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:domain :MoP ;
+    rdfs:range :InterestRegistry .
+
+:hasLegislativeSession a owl:InverseFunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:domain :Legislature ;
+    rdfs:range :LegislativeSession .
+
+:inLegislature a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:domain :ElectoralCircle ;
+    rdfs:range :Legislature .
+
+:inSituation a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:domain :MoP ;
+    rdfs:range :MoPSituation .
+
+:isMemberOf a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:domain :MoP ;
+    rdfs:range :ParliamentaryGroup .
+
+:parliamentaryName a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:domain :MoP ;
+    rdfs:range xsd:string .
+
+:servesDuring a owl:FunctionalProperty,
+        owl:ObjectProperty ;
+    rdfs:domain :MoP ;
+    rdfs:range :Legislature .
+
+rdfs:label a owl:DatatypeProperty ;
+    rdfs:domain :ElectoralCircle,
+        :MoPDuty,
+        :MoPSituation .
+
+owl:topDataProperty rdfs:subPropertyOf :bid .
+
+foaf:accountName a owl:DatatypeProperty ;
+    rdfs:domain :MoP .
+
+:InterestRegistry a owl:Class,
+        owl:NamedIndividual ;
+    rdfs:label "Interest Registry"@en,
+        "Registo de Interesses"@pt .
+
+:bid a owl:DatatypeProperty,
+        owl:FunctionalProperty ;
+    rdfs:domain :MoP ;
+    rdfs:range xsd:int .
+
+ocd:Deputato a owl:Class .
+
+ocd:Legislatura a owl:Class .
+
+ocd:gruppoParlamentare a owl:Class .
+
+m4sc:Parlamentarian a owl:Class .
+
+schema:Person a owl:Class .
+
+:ElectoralCircle a owl:Class .
+
+:LegislativeSession a owl:Class .
+
+:MoPSituation a owl:Class .
+
+:MoPDuty a owl:Class .
+
+:Legislature a owl:Class ;
+    owl:equivalentClass ocd:Legislatura .
+
+:MoP a owl:Class ;
+    rdfs:subClassOf schema:Person ;
+    owl:equivalentClass ocd:Deputato,
+        m4sc:Parlamentarian .
+
+:ParliamentaryGroup a owl:Class ;
+    owl:equivalentClass ocd:gruppoParlamentare .
+

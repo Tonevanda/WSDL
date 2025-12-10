@@ -17,21 +17,21 @@
 #    Object Properties
 #################################################################
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#electedIn
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/electedIn
 :electedIn rdf:type owl:ObjectProperty ,
                     owl:FunctionalProperty ;
            rdfs:domain :MoP ;
            rdfs:range :ElectoralCircle .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#hasDuty
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/hasDuty
 :hasDuty rdf:type owl:ObjectProperty ,
                   owl:FunctionalProperty ;
          rdfs:domain :MoP ;
          rdfs:range :MoPDuty .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#hasInterestRegistry
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/hasInterestRegistry
 :hasInterestRegistry rdf:type owl:ObjectProperty ,
                               owl:FunctionalProperty ,
                               owl:InverseFunctionalProperty ;
@@ -39,35 +39,35 @@
                      rdfs:range :InterestRegistry .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#hasLegislativeSession
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/hasLegislativeSession
 :hasLegislativeSession rdf:type owl:ObjectProperty ,
                                 owl:InverseFunctionalProperty ;
                        rdfs:domain :Legislature ;
                        rdfs:range :LegislativeSession .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#inLegislature
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/inLegislature
 :inLegislature rdf:type owl:ObjectProperty ,
                         owl:FunctionalProperty ;
                rdfs:domain :ElectoralCircle ;
                rdfs:range :Legislature .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#inSituation
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/inSituation
 :inSituation rdf:type owl:ObjectProperty ,
                       owl:FunctionalProperty ;
              rdfs:domain :MoP ;
              rdfs:range :MoPSituation .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#isMemberOf
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/isMemberOf
 :isMemberOf rdf:type owl:ObjectProperty ,
                      owl:FunctionalProperty ;
             rdfs:domain :MoP ;
             rdfs:range :ParliamentaryGroup .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#servesDuring
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/servesDuring
 :servesDuring rdf:type owl:ObjectProperty ,
                        owl:FunctionalProperty ;
               rdfs:domain :MoP ;
@@ -82,8 +82,7 @@
 dct:identifier rdf:type owl:DatatypeProperty ;
                rdfs:domain :ElectoralCircle ,
                            :MoP ,
-                           :MoPDuty ,
-                           :ParliamentaryGroup .
+                           :MoPDuty .
 
 
 ###  http://schema.org/endDate
@@ -91,8 +90,7 @@ dct:identifier rdf:type owl:DatatypeProperty ;
                             rdfs:domain :LegislativeSession ,
                                         :Legislature ,
                                         :MoPDuty ,
-                                        :MoPSituation ,
-                                        :ParliamentaryGroup .
+                                        :MoPSituation .
 
 
 ###  http://schema.org/position
@@ -106,18 +104,17 @@ dct:identifier rdf:type owl:DatatypeProperty ;
                               rdfs:domain :LegislativeSession ,
                                           :Legislature ,
                                           :MoPDuty ,
-                                          :MoPSituation ,
-                                          :ParliamentaryGroup .
+                                          :MoPSituation .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#bid
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/bid
 :bid rdf:type owl:DatatypeProperty ,
               owl:FunctionalProperty ;
      rdfs:domain :MoP ;
      rdfs:range xsd:int .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#parliamentaryName
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/parliamentaryName
 :parliamentaryName rdf:type owl:DatatypeProperty ,
                             owl:FunctionalProperty ;
                    rdfs:domain :MoP ;
@@ -128,13 +125,11 @@ dct:identifier rdf:type owl:DatatypeProperty ;
 rdfs:label rdf:type owl:DatatypeProperty ;
            rdfs:domain :ElectoralCircle ,
                        :MoPDuty ,
-                       :MoPSituation ,
-                       :ParliamentaryGroup .
+                       :MoPSituation .
 
 
 ###  http://www.w3.org/2002/07/owl#topDataProperty
 owl:topDataProperty rdfs:subPropertyOf :bid .
-
 
 ###  http://xmlns.com/foaf/0.1/accountName
 foaf:accountName rdf:type owl:DatatypeProperty ;
@@ -145,47 +140,71 @@ foaf:accountName rdf:type owl:DatatypeProperty ;
 #    Classes
 #################################################################
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#ElectoralCircle
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/ElectoralCircle
 :ElectoralCircle rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#InterestRegistry
-:InterestRegistry rdf:type owl:Class ;
-                  rdfs:label "Interest Registry"@en ,
-                             "Registo de Interesses"@pt .
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/InterestRegistry
+:InterestRegistry rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#LegislativeSession
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/LegislativeSession
 :LegislativeSession rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#Legislature
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/Legislature
 :Legislature rdf:type owl:Class ;
-     owl:equivalentClass ocd:Legislatura .
+             owl:equivalentClass ocd:Legislatura .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#MoP
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/MoP
 :MoP rdf:type owl:Class ;
-     rdfs:subClassOf schema:Person ;
-     owl:equivalentClass m4sc:Parlamentarian ;
-     owl:equivalentClass ocd:Deputato .
+     owl:equivalentClass ocd:Deputato ,
+                         m4sc:Parlamentarian ;
+     rdfs:subClassOf schema:Person .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#MoPDuty
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/MoPDuty
 :MoPDuty rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#MoPSituation
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/MoPSituation
 :MoPSituation rdf:type owl:Class .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#ParliamentaryGroup
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/ParliamentaryGroup
 :ParliamentaryGroup rdf:type owl:Class ;
-     owl:equivalentClass ocd:gruppoParlamentare .
+                    owl:equivalentClass ocd:gruppoParlamentare .
+
+
+###  https://dati.camera.it/ocd/Deputato
+ocd:Deputato rdf:type owl:Class .
+
+
+###  https://dati.camera.it/ocd/Legislatura
+ocd:Legislatura rdf:type owl:Class .
+
+
+###  https://dati.camera.it/ocd/gruppoParlamentare
+ocd:gruppoParlamentare rdf:type owl:Class .
+
+
+###  https://example.org/map4scrutiny/core#Parlamentarian
+m4sc:Parlamentarian rdf:type owl:Class .
 
 
 ###  https://schema.org/Person
 schema:Person rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/InterestRegistry
+:InterestRegistry rdf:type owl:NamedIndividual ;
+                  rdfs:label "Interest Registry"@en ,
+                             "Registo de Interesses"@pt .
 
 
 ###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi
