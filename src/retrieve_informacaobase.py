@@ -138,7 +138,8 @@ def build_legislature(xml_obj:XMLObject, g:Graph):
 
     legislature_uri = POLI[id]
     g.add((legislature_uri, RDF.type, POLI.Legislature))
-    g.add((legislature_uri, RDFS.label, Literal("Legislatura "+id, lang="pt")))
+    g.add((legislature_uri, RDFS.label, Literal(id + " Legislatura", lang="pt")))
+    g.add((legislature_uri, RDFS.label, Literal(id + " Legislature", lang="en")))
     g.add((legislature_uri, SCHEMA.position, Literal(get_leg_number(id), datatype=XSD.int)))
     g.add((legislature_uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
     if not ended: g.add((legislature_uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
@@ -153,7 +154,8 @@ def build_parliamentary_groups(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
     for party_id, party_name in parliamentary_groups.items():
         party_uri = POLI[f"{party_id}_{leg_id}"]
         g.add((party_uri, RDF.type, POLI.ParliamentaryGroup))
-        g.add((party_uri, RDFS.label, Literal(f"{party_name} na {leg_id} Legislatura", lang="pt")))
+        g.add((party_uri, RDFS.label, Literal(f"{party_name} durante a {leg_id} Legislatura", lang="pt")))
+        g.add((party_uri, RDFS.label, Literal(f"{party_name} during the {leg_id} Legislature", lang="en")))
         g.add((party_uri, SKOS.prefLabel, Literal(party_name, lang="pt")))
         g.add((party_uri, SKOS.altLabel, Literal(party_id, lang="pt")))
         g.add((party_uri, POLI.representedInLegislature, leg_uri))

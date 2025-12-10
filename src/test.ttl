@@ -17,61 +17,71 @@ dct:identifier a owl:DatatypeProperty ;
 <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology> a owl:Ontology .
 
 :BE_XVII a :ParliamentaryGroup ;
-    rdfs:label "Bloco De Esquerda na XVII Legislatura"@pt ;
+    rdfs:label "Bloco De Esquerda during the XVII Legislature"@en,
+        "Bloco De Esquerda durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "BE"@pt ;
     skos:prefLabel "Bloco De Esquerda"@pt .
 
 :CDS-PP_XVII a :ParliamentaryGroup ;
-    rdfs:label "Centro Democrático Social - Partido Popular na XVII Legislatura"@pt ;
+    rdfs:label "Centro Democrático Social - Partido Popular during the XVII Legislature"@en,
+        "Centro Democrático Social - Partido Popular durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "CDS-PP"@pt ;
     skos:prefLabel "Centro Democrático Social - Partido Popular"@pt .
 
 :CH_XVII a :ParliamentaryGroup ;
-    rdfs:label "Chega na XVII Legislatura"@pt ;
+    rdfs:label "Chega during the XVII Legislature"@en,
+        "Chega durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "CH"@pt ;
     skos:prefLabel "Chega"@pt .
 
 :IL_XVII a :ParliamentaryGroup ;
-    rdfs:label "Iniciativa Liberal na XVII Legislatura"@pt ;
+    rdfs:label "Iniciativa Liberal during the XVII Legislature"@en,
+        "Iniciativa Liberal durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "IL"@pt ;
     skos:prefLabel "Iniciativa Liberal"@pt .
 
 :JPP_XVII a :ParliamentaryGroup ;
-    rdfs:label "Juntos Pelo Povo na XVII Legislatura"@pt ;
+    rdfs:label "Juntos Pelo Povo during the XVII Legislature"@en,
+        "Juntos Pelo Povo durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "JPP"@pt ;
     skos:prefLabel "Juntos Pelo Povo"@pt .
 
 :L_XVII a :ParliamentaryGroup ;
-    rdfs:label "Livre na XVII Legislatura"@pt ;
+    rdfs:label "Livre during the XVII Legislature"@en,
+        "Livre durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "L"@pt ;
     skos:prefLabel "Livre"@pt .
 
 :PAN_XVII a :ParliamentaryGroup ;
-    rdfs:label "Pessoas-Animais-Natureza na XVII Legislatura"@pt ;
+    rdfs:label "Pessoas-Animais-Natureza during the XVII Legislature"@en,
+        "Pessoas-Animais-Natureza durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "PAN"@pt ;
     skos:prefLabel "Pessoas-Animais-Natureza"@pt .
 
 :PCP_XVII a :ParliamentaryGroup ;
-    rdfs:label "Partido Comunista Português na XVII Legislatura"@pt ;
+    rdfs:label "Partido Comunista Português during the XVII Legislature"@en,
+        "Partido Comunista Português durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "PCP"@pt ;
     skos:prefLabel "Partido Comunista Português"@pt .
 
 :PSD_XVII a :ParliamentaryGroup ;
-    rdfs:label "Partido Social Democrata na XVII Legislatura"@pt ;
+    rdfs:label "Partido Social Democrata during the XVII Legislature"@en,
+        "Partido Social Democrata durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "PSD"@pt ;
     skos:prefLabel "Partido Social Democrata"@pt .
 
 :PS_XVII a :ParliamentaryGroup ;
-    rdfs:label "Partido Socialista na XVII Legislatura"@pt ;
+    rdfs:label "Partido Socialista during the XVII Legislature"@en,
+        "Partido Socialista durante a XVII Legislatura"@pt ;
     :representedInLegislature :XVII ;
     skos:altLabel "PS"@pt ;
     skos:prefLabel "Partido Socialista"@pt .
@@ -193,7 +203,8 @@ schema:Person a owl:Class .
         m4sc:Parlamentarian .
 
 :XVII a :Legislature ;
-    rdfs:label "Legislatura XVII"@pt ;
+    rdfs:label "XVII Legislature"@en,
+        "XVII Legislatura"@pt ;
     schema:endDate "None"^^xsd:date ;
     schema:position "17"^^xsd:int ;
     schema:startDate "2025-06-03T00:00:00"^^xsd:date .
