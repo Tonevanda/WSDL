@@ -12,7 +12,11 @@
 @prefix schema: <https://schema.org/> .
 @base <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/> .
 
-<http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology> rdf:type owl:Ontology .
+<http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology> rdf:type owl:Ontology ;
+     dct:creator              "Tiago Cruz", "João Lourenço", "João Cardoso" ;
+     dct:description          "This is a collection of properties and classes created for an Ontology representing the Informação Base data from the Portuguese Parlament website, developed for the Web Semantics and Linked Data course at FEUP";
+     owl:versionInfo		"1.0";
+.
 
 #################################################################
 #    Annotation properties
