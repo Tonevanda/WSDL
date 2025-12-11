@@ -145,6 +145,12 @@ def get_legislative_session_info(xml_obj: XMLObject):
 
     return session_map
 
+def get_mp_info(xml_obj: XMLObject):
+
+    element = xml_obj.find_first_element_by_name('Deputados')
+
+    pass
+
 def build_legislature(xml_obj:XMLObject, g:Graph):
     legislature_element = xml_obj.find_first_element_by_name('DetalheLegislatura')
 
@@ -205,5 +211,10 @@ def build_legislative_session(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, SCHEMA.startDate, Literal(items[0], datatype=XSD.date)))
         if not items[2]: g.add((uri, SCHEMA.endDate, Literal(items[1], datatype=XSD.date)))
         g.add((uri, POLI.duringLegislature, leg_uri))
+
+    return g
+
+def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
+    leg_id = str(leg_uri).split('/')[-1]
 
     return g
