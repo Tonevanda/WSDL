@@ -18,6 +18,9 @@ def get_leg_number(id: str):
     except InvalidRomanNumeralError:
         return None
 
+def get_attribute(session: XMLObject, type: str):
+    element = session.find_first_element_by_name(type)
+    return element.get_string() if element else None
 
 def get_bid(xml_obj: XMLObject):
     """
@@ -146,8 +149,18 @@ def get_legislative_session_info(xml_obj: XMLObject):
     return session_map
 
 def get_mp_info(xml_obj: XMLObject):
+    def get_attribute(session: XMLObject, type: str):
+        element = session.find_first_element_by_name(type)
+        return element.get_string() if element else None
 
     element = xml_obj.find_first_element_by_name('Deputados')
+
+    mps = {}
+    for mp in element.find_elements_by_name("DadosDeputadoOrgaoPlenario"):
+        id = get_attribute(xml_obj, 'DepId')
+        bid = get_attribute(xml_obj, 'DepCadId')
+        parliamentaryName = get_attribute(xml_obj, 'DepNomeParlamentar')
+        name = get_attribute(xml_obj, 'DepNomeCompleto')
 
     pass
 
@@ -163,23 +176,18 @@ def build_legislature(xml_obj:XMLObject, g:Graph):
     g.add((legislature_uri, RDFS.label, Literal(id + " Legislature", lang="en")))
     g.add((legislature_uri, SCHEMA.position, Literal(get_leg_number(id), datatype=XSD.int)))
     g.add((legislature_uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
-    if not ended: g.add((legislature_uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+    if ended: g.add((legislature_uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
 
     return g, legislature_uri
 
-def build_parliamentary_groups(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
+def build_parliamentary_groups(xml_obj: XMLObject, g:Graph,):
     parliamentary_groups = get_parties(xml_obj)
-    leg_id = str(leg_uri).split('/')[-1]
-
 
     for party_id, party_name in parliamentary_groups.items():
-        party_uri = POLI[f"{party_id}_{leg_id}"]
+        party_uri = POLI[party_id]
         g.add((party_uri, RDF.type, POLI.ParliamentaryGroup))
-        g.add((party_uri, RDFS.label, Literal(f"{party_name} durante a {leg_id} legislatura", lang="pt")))
-        g.add((party_uri, RDFS.label, Literal(f"{party_name} during the {leg_id} legislature", lang="en")))
         g.add((party_uri, SKOS.prefLabel, Literal(party_name, lang="pt")))
         g.add((party_uri, SKOS.altLabel, Literal(party_id, lang="pt")))
-        g.add((party_uri, POLI.representedInLegislature, leg_uri))
 
     return g
 
@@ -209,12 +217,57 @@ def build_legislative_session(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, RDFS.label, Literal("Legislative session number " + session + " from the " + leg_id + " legislature", lang="en")))
         g.add((uri, SCHEMA.position, Literal(session, datatype=XSD.int)))
         g.add((uri, SCHEMA.startDate, Literal(items[0], datatype=XSD.date)))
-        if not items[2]: g.add((uri, SCHEMA.endDate, Literal(items[1], datatype=XSD.date)))
+        if items[2]: g.add((uri, SCHEMA.endDate, Literal(items[1], datatype=XSD.date)))
         g.add((uri, POLI.duringLegislature, leg_uri))
 
     return g
 
 def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
+    def build_membership(mp: XMLObject, mp_uri, g: Graph):
+
+        element = mp.find_first_element_by_name('DepGP')
+
+        for pg in element.find_elements_by_name("pt_ar_wsgode_objectos_DadosSituacaoGP"):
+            acronym = get_attribute(pg, 'gpSigla')
+            pg_uri = POLI[acronym]
+            start_date = get_attribute(pg, 'gpDtInicio')
+            end_date = get_attribute(pg, 'gpDtFim')
+
+            uri = POLI[f"{clean_name}_{leg_id}_{acronym}"]
+            g.add((uri, RDF.type, POLI.Membership))
+            g.add((uri, POLI.membershipOfGroup, pg_uri))
+            g.add((uri, POLI.memberDuringLegislature, leg_uri))
+            g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
+            if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+
+
+            g.add((mp_uri, POLI.hasMembership, uri))
+        
+        return g
+
+    def build_situation():
+        pass
+    def build_duty():
+        pass
+    
     leg_id = str(leg_uri).split('/')[-1]
+    element = xml_obj.find_first_element_by_name('Deputados')
+
+    for mp in element.find_elements_by_name("DadosDeputadoOrgaoPlenario"):
+        id = int(float(get_attribute(mp, 'DepId')))
+        bid = int(float(get_attribute(mp, 'DepCadId')))
+        parliamentaryName = get_attribute(mp, 'DepNomeParlamentar')
+        name = get_attribute(mp, 'DepNomeCompleto')
+        clean_name = name.replace(' ','_').replace("’","").replace(",","")
+
+        uri = POLI[clean_name]
+        g.add((uri, RDF.type, POLI.MoP))
+        g.add((uri, SCHEMA.name, Literal(name, datatype=XSD.string)))
+        g.add((uri, POLI.parliamentaryName, Literal(parliamentaryName, datatype=XSD.string)))
+        g.add((uri, POLI.bid, Literal(bid, datatype=XSD.int)))
+        g.add((uri, DCTERMS.identifier, Literal(int(id), datatype=XSD.int)))
+        g.add((uri, POLI.servesDuring, leg_uri))
+
+        g = build_membership(mp, uri, g)
 
     return g
