@@ -2,6 +2,7 @@ import requests
 from xml_object import XMLObject
 from converter import *
 from rdflib import *
+from pyshacl import validate
 
 def main():
 
@@ -29,6 +30,11 @@ def main():
         
         g = convert_to_rdf(xml_obj, g)
     
+    conforms, results_graph, results_text = validate(
+        data_graph=g,
+        shacl_graph=Graph().parse("../resources/shacl.ttl", format="turtle"),
+    )
+    print("Validation Results: \n", results_text)
     g.serialize(destination="test.ttl", format="turtle")
 
 if __name__ == "__main__":
