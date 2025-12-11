@@ -245,13 +245,34 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         
         return g
 
-    def build_situation():
-        pass
+    def build_situation(mp: XMLObject, mp_uri, g: Graph):
+        element = mp.find_first_element_by_name('DepSituacao')
+        
+        for st in element.find_elements_by_name("pt_ar_wsgode_objectos_DadosSituacaoDeputado"):
+            situation = get_attribute(st, 'sioDes').replace(" ", "_").replace("(","_").replace(")","")
+            sit_uri = POLI[situation]
+            start_date = get_attribute(st, 'sioDtInicio')
+            end_date = get_attribute(st, 'sioDtFim')
+
+            if (situation not in sitSet):
+                print(f"Situation {situation} not in set")
+                sitSet.add(situation)
+                g.add((sit_uri, RDF.type, POLI.SituationType))
+
+            uri = POLI[f"{clean_name}_{start_date}"]
+            g.add((uri, RDF.type, POLI.Situation))
+            g.add((uri, POLI.hasSituationType, sit_uri))
+            g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
+            if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+
+        return g
+
     def build_duty():
         pass
     
     leg_id = str(leg_uri).split('/')[-1]
     element = xml_obj.find_first_element_by_name('Deputados')
+    sitSet = set()
 
     for mp in element.find_elements_by_name("DadosDeputadoOrgaoPlenario"):
         id = int(float(get_attribute(mp, 'DepId')))
@@ -269,5 +290,6 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, POLI.servesDuring, leg_uri))
 
         g = build_membership(mp, uri, g)
+        g = build_situation(mp, uri, g)
 
     return g
