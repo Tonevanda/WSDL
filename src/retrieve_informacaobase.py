@@ -88,15 +88,10 @@ def get_legislature_info(xml_obj: XMLObject):
     # Get the ID, like "XVI"
     #bid = get_bid(xml_obj)
     id = get_id(xml_obj)
-    display_start_date = get_start_date(xml_obj)
-    display_end_date = get_end_date(xml_obj)
-    ended = True if display_end_date else False
+    start_date = get_start_date(xml_obj)
+    end_date = get_end_date(xml_obj)
 
-    # Get the start and end dates in timestamp format
-    start_date = datetime.fromtimestamp(datetime.strptime(display_start_date, "%Y-%m-%d").timestamp()) if display_start_date else None
-    end_date = datetime.fromtimestamp(datetime.strptime(display_end_date, "%Y-%m-%d").timestamp()) if display_end_date else None
-
-    return id, start_date, end_date, display_start_date, display_end_date, ended
+    return id, start_date, end_date
 
 def get_electoral_circles_info(xml_obj: XMLObject):
     def get_id(circle: XMLObject):
@@ -118,33 +113,14 @@ def get_electoral_circles_info(xml_obj: XMLObject):
     return circles_map
 
 def get_legislative_session_info(xml_obj: XMLObject):
-    def get_session_start_date(session: XMLObject):
-        element = session.find_first_element_by_name('dataInicio')
-        return element.get_string() if element else None
-    def get_session_end_date(session: XMLObject):
-        element = session.find_first_element_by_name('dataFim')
-        return element.get_string() if element else None
-    def get_session_number(session: XMLObject):
-        element = session.find_first_element_by_name('numSessao')
-        return element.get_string() if element else None
-
     element = xml_obj.find_first_element_by_name('SessoesLegislativas')
-
-    
 
     session_map = {}
     for session in element.find_elements_by_name('pt_gov_ar_objectos_SessaoLegislativaOut'):
-        display_start_date = get_session_start_date(session)
-        display_end_date = get_session_end_date(session)
-        ended = True if display_end_date else False
-
-        number = get_session_number(session)
-
-        # Get the start and end dates in timestamp format
-        start_date = datetime.fromtimestamp(datetime.strptime(display_start_date, "%Y-%m-%d").timestamp()) if display_start_date else None
-        end_date = datetime.fromtimestamp(datetime.strptime(display_end_date, "%Y-%m-%d").timestamp()) if display_end_date else None
-
-        session_map[number] = start_date, end_date, ended
+        start_date = get_attribute(session, 'dataInicio')
+        end_date = get_attribute(session, 'dataFim')
+        number = get_attribute(session, 'numSessao')
+        session_map[number] = start_date, end_date
 
     return session_map
 
@@ -168,7 +144,7 @@ def build_legislature(xml_obj:XMLObject, g:Graph):
     legislature_element = xml_obj.find_first_element_by_name('DetalheLegislatura')
 
     # Get the general information
-    id, start_date, end_date, display_start_date, display_end_date, ended = get_legislature_info(legislature_element)
+    id, start_date, end_date = get_legislature_info(legislature_element)
 
     legislature_uri = POLI[id]
     g.add((legislature_uri, RDF.type, POLI.Legislature))
@@ -176,7 +152,7 @@ def build_legislature(xml_obj:XMLObject, g:Graph):
     g.add((legislature_uri, RDFS.label, Literal(id + " Legislature", lang="en")))
     g.add((legislature_uri, SCHEMA.position, Literal(get_leg_number(id), datatype=XSD.int)))
     g.add((legislature_uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
-    if ended: g.add((legislature_uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+    if end_date: g.add((legislature_uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
 
     return g, legislature_uri
 
@@ -217,7 +193,7 @@ def build_legislative_session(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, RDFS.label, Literal("Legislative session number " + session + " from the " + leg_id + " legislature", lang="en")))
         g.add((uri, SCHEMA.position, Literal(session, datatype=XSD.int)))
         g.add((uri, SCHEMA.startDate, Literal(items[0], datatype=XSD.date)))
-        if items[2]: g.add((uri, SCHEMA.endDate, Literal(items[1], datatype=XSD.date)))
+        if items[1] is not None: g.add((uri, SCHEMA.endDate, Literal(items[1], datatype=XSD.date)))
         g.add((uri, POLI.duringLegislature, leg_uri))
 
     return g
