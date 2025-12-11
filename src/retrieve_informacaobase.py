@@ -249,17 +249,17 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         element = mp.find_first_element_by_name('DepSituacao')
         
         for st in element.find_elements_by_name("pt_ar_wsgode_objectos_DadosSituacaoDeputado"):
-            situation = get_attribute(st, 'sioDes').replace(" ", "_").replace("(","_").replace(")","")
-            sit_uri = POLI[situation]
+            situation = get_attribute(st, 'sioDes')
+            clean_sit = situation.replace(" ", "_").replace("(","_").replace(")","")
+            sit_uri = POLI[clean_sit]
             start_date = get_attribute(st, 'sioDtInicio')
             end_date = get_attribute(st, 'sioDtFim')
 
-            if (situation not in sitSet):
-                print(f"Situation {situation} not in set")
-                sitSet.add(situation)
-                g.add((sit_uri, RDF.type, POLI.SituationType))
+            g.add((sit_uri, RDF.type, SKOS.Concept))
+            g.add((sit_uri, SKOS.prefLabel, Literal(situation, lang="pt")))
+            g.add((sit_uri, SKOS.inScheme, POLI["SituationTypeScheme"]))
 
-            uri = POLI[f"{clean_name}_{start_date}"]
+            uri = POLI[f"{clean_name}_{start_date}_Situation"]
             g.add((uri, RDF.type, POLI.Situation))
             g.add((uri, POLI.hasSituationType, sit_uri))
             g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
@@ -267,12 +267,34 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
 
         return g
 
-    def build_duty():
-        pass
+    def build_duty(mp: XMLObject, mp_uri, g: Graph):
+        element = mp.find_first_element_by_name('DepCargo')
+
+        if element is None: return g
+        
+        for st in element.find_elements_by_name("pt_ar_wsgode_objectos_DadosCargoDeputado"):
+            duty = get_attribute(st, 'carDes')
+            duty_clean = duty.replace(" ", "_").replace("(","_").replace(")","")
+            id = int(float(get_attribute(st, 'carId')))
+            duty_uri = POLI[duty_clean]
+            start_date = get_attribute(st, 'carDtInicio')
+            end_date = get_attribute(st, 'carDtFim')
+
+            g.add((duty_uri, RDF.type, SKOS.Concept))
+            g.add((duty_uri, SKOS.prefLabel, Literal(duty, lang="pt")))
+            g.add((duty_uri, SKOS.inScheme, POLI["DutyTypeScheme"]))
+            g.add((duty_uri, DCTERMS.identifier, Literal(id, datatype=XSD.int) ))
+
+            uri = POLI[f"{clean_name}_{start_date}_Duty"]
+            g.add((uri, RDF.type, POLI.Duty))
+            g.add((uri, POLI.hasSituationType, duty_uri))
+            g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
+            if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+
+        return g
     
     leg_id = str(leg_uri).split('/')[-1]
     element = xml_obj.find_first_element_by_name('Deputados')
-    sitSet = set()
 
     for mp in element.find_elements_by_name("DadosDeputadoOrgaoPlenario"):
         id = int(float(get_attribute(mp, 'DepId')))
@@ -294,5 +316,6 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
 
         g = build_membership(mp, uri, g)
         g = build_situation(mp, uri, g)
+        g = build_duty(mp, uri, g)
 
     return g

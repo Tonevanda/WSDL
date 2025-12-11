@@ -15,40 +15,34 @@
 <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology> rdf:type owl:Ontology .
 
 #################################################################
+#    Annotation properties
+#################################################################
+
+###  http://www.w3.org/2004/02/skos/core#prefLabel
+skos:prefLabel rdf:type owl:AnnotationProperty .
+
+
+#################################################################
 #    Object Properties
 #################################################################
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#hasMembership
-:hasMembership rdf:type owl:ObjectProperty ;
-               rdfs:domain :MoP ;
-               rdfs:range :Membership .
-
-
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#membershipOfGroup
-:membershipOfGroup rdf:type owl:ObjectProperty ,
-                            owl:FunctionalProperty ;
-                   rdfs:domain :Membership ;
-                   rdfs:range :ParliamentaryGroup .
-
-
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#situationType
-:situationType rdf:type owl:ObjectProperty ,
-                        owl:FunctionalProperty ;
-               rdfs:domain :Situation ;
-               rdfs:range :SituationType .
-
-
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/duringLegislature
-:duringLegislature rdf:type owl:ObjectProperty ,
-                            owl:FunctionalProperty ;
-                   rdfs:domain :Membership ,
-                               :LegislativeSession ;
+:duringLegislature rdf:type owl:ObjectProperty ;
+                   owl:inverseOf :hasSession ;
+                   rdf:type owl:FunctionalProperty ;
+                   rdfs:domain :LegislativeSession ;
                    rdfs:range :Legislature .
 
 
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/dutyType
+:dutyType rdf:type owl:ObjectProperty ,
+                   owl:FunctionalProperty ;
+          rdfs:domain :Duty ;
+          rdfs:range skos:Concept .
+
+
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/electedIn
-:electedIn rdf:type owl:ObjectProperty ,
-                    owl:FunctionalProperty ;
+:electedIn rdf:type owl:ObjectProperty ;
            rdfs:domain :MoP ;
            rdfs:range :ElectoralCircle .
 
@@ -61,10 +55,21 @@
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/hasInterestRegistry
 :hasInterestRegistry rdf:type owl:ObjectProperty ,
-                              owl:FunctionalProperty ,
-                              owl:InverseFunctionalProperty ;
+                              owl:FunctionalProperty ;
                      rdfs:domain :MoP ;
                      rdfs:range :InterestRegistry .
+
+
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/hasMembership
+:hasMembership rdf:type owl:ObjectProperty ;
+               rdfs:domain :MoP ;
+               rdfs:range :Membership .
+
+
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/hasSession
+:hasSession rdf:type owl:ObjectProperty ;
+            rdfs:domain :Legislature ;
+            rdfs:range :LegislativeSession .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/inLegislature
@@ -80,22 +85,43 @@
              rdfs:range :Situation .
 
 
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/memberDuringLegislature
+:memberDuringLegislature rdf:type owl:ObjectProperty ,
+                                  owl:FunctionalProperty ;
+                         rdfs:domain :Membership ;
+                         rdfs:range :Legislature .
+
+
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/membershipOfGroup
+:membershipOfGroup rdf:type owl:ObjectProperty ,
+                            owl:FunctionalProperty ;
+                   rdfs:domain :Membership ;
+                   rdfs:range :ParliamentaryGroup .
+
+
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/servedBy
+:servedBy rdf:type owl:ObjectProperty ;
+          owl:inverseOf :servesDuring ;
+          rdfs:domain :Legislature ;
+          rdfs:range :MoP .
+
+
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/servesDuring
 :servesDuring rdf:type owl:ObjectProperty ;
               rdfs:domain :MoP ;
               rdfs:range :Legislature .
 
 
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/situationType
+:situationType rdf:type owl:ObjectProperty ,
+                        owl:FunctionalProperty ;
+               rdfs:domain :Situation ;
+               rdfs:range skos:Concept .
+
+
 #################################################################
 #    Data properties
 #################################################################
-
-###  http://purl.org/dc/terms/identifier
-dct:identifier rdf:type owl:DatatypeProperty ;
-               rdfs:domain :Duty ,
-                           :ElectoralCircle ,
-                           :MoP .
-
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/bid
 :bid rdf:type owl:DatatypeProperty ,
@@ -111,64 +137,9 @@ dct:identifier rdf:type owl:DatatypeProperty ;
                    rdfs:range xsd:string .
 
 
-###  http://www.w3.org/2000/01/rdf-schema#label
-rdfs:label rdf:type owl:DatatypeProperty ;
-           rdfs:domain :Duty ,
-                       :ElectoralCircle .
-
-
-###  http://www.w3.org/2002/07/owl#topDataProperty
-owl:topDataProperty rdfs:subPropertyOf :bid .
-
-
-###  http://www.w3.org/2004/02/skos/core#altLabel
-skos:altLabel rdf:type owl:DatatypeProperty ;
-              rdfs:domain :ParliamentaryGroup .
-
-
-###  http://www.w3.org/2004/02/skos/core#prefLabel
-skos:prefLabel rdf:type owl:DatatypeProperty ;
-               rdfs:domain :ParliamentaryGroup .
-
-
-###  http://xmlns.com/foaf/0.1/accountName
-foaf:accountName rdf:type owl:DatatypeProperty ;
-                 rdfs:domain :MoP .
-
-
-###  https://schema.org/endDate
-schema:endDate rdf:type owl:DatatypeProperty ;
-               rdfs:domain :Duty ,
-                           :LegislativeSession ,
-                           :Legislature ,
-                           :Situation .
-
-
-###  https://schema.org/position
-schema:position rdf:type owl:DatatypeProperty ;
-                rdfs:domain :LegislativeSession ,
-                            :Legislature .
-
-
-###  https://schema.org/startDate
-schema:startDate rdf:type owl:DatatypeProperty ;
-                 rdfs:domain :Duty ,
-                             :LegislativeSession ,
-                             :Legislature ,
-                             :Situation .
-
-
 #################################################################
 #    Classes
 #################################################################
-
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#Membership
-:Membership rdf:type owl:Class .
-
-
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology#SituationType
-:SituationType rdf:type owl:Class .
-
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/Duty
 :Duty rdf:type owl:Class .
@@ -191,6 +162,10 @@ schema:startDate rdf:type owl:DatatypeProperty ;
              owl:equivalentClass ocd:Legislatura .
 
 
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/Membership
+:Membership rdf:type owl:Class .
+
+
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/MoP
 :MoP rdf:type owl:Class ;
      owl:equivalentClass ocd:Deputato ,
@@ -205,6 +180,14 @@ schema:startDate rdf:type owl:DatatypeProperty ;
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/Situation
 :Situation rdf:type owl:Class .
+
+
+###  http://www.w3.org/2004/02/skos/core#Concept
+skos:Concept rdf:type owl:Class .
+
+
+###  http://www.w3.org/2004/02/skos/core#ConceptScheme
+skos:ConceptScheme rdf:type owl:Class .
 
 
 ###  https://dati.camera.it/ocd/Deputato
@@ -225,6 +208,24 @@ m4sc:Parlamentarian rdf:type owl:Class .
 
 ###  https://schema.org/Person
 schema:Person rdf:type owl:Class .
+
+
+#################################################################
+#    Individuals
+#################################################################
+
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/DutyTypeScheme
+:DutyTypeScheme rdf:type owl:NamedIndividual ,
+                         skos:ConceptScheme ;
+                skos:prefLabel "Tipos de Cargos exercidos por um Deputado"@pt ,
+                               "Types of Duties done by Members of Parlament"@en .
+
+
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/SituationTypeScheme
+:SituationTypeScheme rdf:type owl:NamedIndividual ,
+                              skos:ConceptScheme ;
+                     skos:prefLabel "Tipos de Situação de Deputado"@pt ,
+                                    "Types of Situations for Members of Parlament"@en .
 
 
 ###  Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi
