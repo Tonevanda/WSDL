@@ -226,7 +226,7 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         
         for st in element.find_elements_by_name("pt_ar_wsgode_objectos_DadosSituacaoDeputado"):
             situation = get_attribute(st, 'sioDes')
-            clean_sit = situation.replace(" ", "_").replace("(","_").replace(")","")
+            clean_sit = situation.replace(" ", "_").replace("(","_").replace(")","").replace(".","")
             sit_uri = POLI[clean_sit]
             start_date = get_attribute(st, 'sioDtInicio')
             end_date = get_attribute(st, 'sioDtFim')
@@ -235,11 +235,13 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
             g.add((sit_uri, SKOS.prefLabel, Literal(situation, lang="pt")))
             g.add((sit_uri, SKOS.inScheme, POLI["SituationTypeScheme"]))
 
-            uri = POLI[f"{clean_name}_{start_date}_Situation"]
+            uri = POLI[f"{clean_name}_{start_date}_{clean_sit}"]
             g.add((uri, RDF.type, POLI.Situation))
             g.add((uri, POLI.hasSituationType, sit_uri))
             g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
             if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+
+            g.add((mp_uri, POLI.inSituation, uri))
 
         return g
 
@@ -267,6 +269,8 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
             g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
             if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
 
+            g.add((mp_uri, POLI.hasDuty, uri))
+
         return g
     
     leg_id = str(leg_uri).split('/')[-1]
@@ -277,7 +281,7 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         bid = int(float(get_attribute(mp, 'DepCadId')))
         parliamentaryName = get_attribute(mp, 'DepNomeParlamentar')
         name = get_attribute(mp, 'DepNomeCompleto')
-        clean_name = name.replace(' ','_').replace("’","").replace(",","")
+        clean_name = name.replace(' ','_').replace("’","").replace(",","").replace(".","")
         ec = get_attribute(mp, 'DepCPDes').replace(' ', '_')
         ec_uri = POLI[f"{ec}_{leg_id}"]
 
