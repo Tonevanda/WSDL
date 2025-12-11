@@ -280,6 +280,8 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         parliamentaryName = get_attribute(mp, 'DepNomeParlamentar')
         name = get_attribute(mp, 'DepNomeCompleto')
         clean_name = name.replace(' ','_').replace("’","").replace(",","")
+        ec = get_attribute(mp, 'DepCPDes').replace(' ', '_')
+        ec_uri = POLI[f"{ec}_{leg_id}"]
 
         uri = POLI[clean_name]
         g.add((uri, RDF.type, POLI.MoP))
@@ -288,6 +290,7 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, POLI.bid, Literal(bid, datatype=XSD.int)))
         g.add((uri, DCTERMS.identifier, Literal(int(id), datatype=XSD.int)))
         g.add((uri, POLI.servesDuring, leg_uri))
+        g.add((uri, POLI.electedIn, ec_uri))
 
         g = build_membership(mp, uri, g)
         g = build_situation(mp, uri, g)
