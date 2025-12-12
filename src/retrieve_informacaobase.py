@@ -182,7 +182,7 @@ def build_electoral_circles(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, POLI.legislatures, leg_uri))
 
         wd_link = get_electoral_circles_link(name)
-        if wd_link is not None: g.add((uri, OWL.sameAs, URIRef("http://www.wikidata.org/wiki/"+wd_link)))
+        if wd_link is not None: g.add((uri, OWL.sameAs, URIRef("http://www.wikidata.org/entity/"+wd_link)))
     
     return g
 
@@ -241,7 +241,7 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
 
             bnode = BNode()
             g.add((bnode, RDF.type, POLI.Situation))
-            g.add((bnode, POLI.hasSituationType, sit_uri))
+            g.add((bnode, POLI.situationType, sit_uri))
             g.add((bnode, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
             if end_date is not None: g.add((bnode, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
 
