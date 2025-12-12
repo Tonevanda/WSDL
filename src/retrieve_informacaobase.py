@@ -3,6 +3,7 @@ from roman import fromRoman, InvalidRomanNumeralError
 import xml.etree.ElementTree as ET
 from rdflib import *
 from xml_object import XMLObject
+from linking import *
 
 POLI = Namespace("http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/")
 SCHEMA = Namespace("https://schema.org/")
@@ -179,6 +180,9 @@ def build_electoral_circles(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, RDFS.label, Literal(name, lang="pt")))
         g.add((uri, DCTERMS.identifier, Literal(id, datatype=XSD.float)))
         g.add((uri, POLI.legislature, leg_uri))
+
+        wd_link = get_electoral_circles_link(name)
+        if wd_link is not None: g.add((uri, SCHEMA.about, "http://www.wikidata.org/wiki/"+wd_link))
     
     return g
 
