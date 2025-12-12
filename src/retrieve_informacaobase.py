@@ -179,10 +179,10 @@ def build_electoral_circles(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, RDF.type, POLI.ElectoralCircle))
         g.add((uri, RDFS.label, Literal(name, lang="pt")))
         g.add((uri, DCTERMS.identifier, Literal(id, datatype=XSD.float)))
-        g.add((uri, POLI.legislature, leg_uri))
+        g.add((uri, POLI.legislatures, leg_uri))
 
         wd_link = get_electoral_circles_link(name)
-        if wd_link is not None: g.add((uri, OWL.sameAs, "http://www.wikidata.org/wiki/"+wd_link))
+        if wd_link is not None: g.add((uri, OWL.sameAs, URIRef("http://www.wikidata.org/wiki/"+wd_link)))
     
     return g
 
@@ -288,16 +288,20 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         name = get_attribute(mp, 'DepNomeCompleto')
         clean_name = name.replace(' ','_').replace("’","").replace(",","").replace(".","")
         ec = get_attribute(mp, 'DepCPDes').replace(' ', '_')
-        ec_uri = POLI[f"{ec}_{leg_id}"]
+        ec_uri = POLI[ec]
 
         uri = POLI[clean_name]
         g.add((uri, RDF.type, POLI.MoP))
         g.add((uri, SCHEMA.name, Literal(name, datatype=XSD.string)))
-        g.add((uri, POLI.parliamentaryName, Literal(parliamentaryName, datatype=XSD.string)))
-        g.add((uri, POLI.bid, Literal(bid, datatype=XSD.int)))
-        g.add((uri, DCTERMS.identifier, Literal(int(id), datatype=XSD.int)))
+        
+        g.add((uri, DCTERMS.identifier, Literal(bid, datatype=XSD.int)))
 
         ctx = BNode()
+        g.add((uri, POLI.servedDuring, ctx))
+
+        g.add((ctx, RDF.type, POLI.LegislatureContext))
+        g.add((ctx, DCTERMS.identifier, Literal(id, datatype=XSD.int)))
+        g.add((ctx, POLI.parliamentaryName, Literal(parliamentaryName, datatype=XSD.string)))
         g.add((ctx, POLI.legislature, leg_uri))
         g.add((ctx, POLI.electoralCircle, ec_uri))
 

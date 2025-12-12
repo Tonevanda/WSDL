@@ -10,49 +10,10 @@
     a sh:NodeShape ;
     sh:targetClass :MoP ;
     sh:property [
-        sh:path :hasMembership ;
-        sh:class :Membership ;
+        sh:path :servedDuring ;
+        sh:class :LegislatureContext ;
         sh:minCount 1 ;
-        sh:message "Each MoP must have at least 1 Membership"@en, "Cada MoP (deputado) deverá ter pelo menos 1 Membership"@pt ;
-    ] ;
-    sh:property [
-        sh:path :hasDuty ;
-        sh:class :Duty ;
-    ] ;
-    sh:property [
-        sh:path :hasInterestRegistry ;
-        sh:class :InterestRegistry ;
-    ] ;
-    sh:property [
-        sh:path :electedIn ;
-        sh:class :ElectoralCircle ;
-        sh:minCount 1 ;
-        sh:message "Each MoP must have at least 1 Electoral Circle"@en, "Cada MoP (deputado) deverá ter pelo menos 1 Círculo Eleitoral"@pt ;
-    ] ;
-    sh:property [
-        sh:path :servesDuring ;
-        sh:class :Legislature ;
-        sh:minCount 1 ;
-        sh:message "Each MoP must have at least 1 Legislature"@en, "Cada MoP (deputado) deverá ter pelo menos 1 Legislatura"@pt ;
-    ] ;
-    sh:property [
-        sh:path :inSituation ;
-        sh:class :Situation ;
-        sh:minCount 1 ;
-        sh:message "Each MoP must have at least 1 Situation"@en, "Cada MoP (deputado) deverá ter pelo menos 1 Situação"@pt ;
-    ] ;
-    sh:property [
-        sh:path :parliamentaryName ;
-        sh:datatype xsd:string ;
-        sh:minCount 1 ;
-        sh:message "Each MoP must have at lesat 1 Parliamentary Name"@en, "Cada MoP (deputado) deverá ter pelo menos 1 Nome Parlamentar"@pt ;
-    ] ;
-    sh:property [
-        sh:path :bid ;
-        sh:datatype xsd:int ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:message "Each MoP must have exactly 1 bid"@en, "Cada MoP (deputado) deverá ter exatamente 1 bid"@pt ;
+        sh:message "Each MoP must have at least 1 Legislature Context"@en, "Cada MoP (deputado) deverá ter pelo menos 1 Contexto de Legislatura"@pt ;
     ] ;
     sh:property [
         sh:path schema:name ;
@@ -60,6 +21,13 @@
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:message "Each MoP must have exactly 1 name"@en, "Cada MoP (deputado) deverá ter exatamente 1 nome"@pt ;
+    ] ;
+    sh:property [
+        sh:path dct:identifier ;
+        sh:datatype xsd:int ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Each MoP must have exactly 1 id"@en, "Cada MoP (deputado) deverá ter exatamente 1 id"@pt ;
     ] 
 .
 
@@ -67,18 +35,10 @@
     a sh:NodeShape ;
     sh:targetClass :Membership ;
     sh:property [
-        sh:path :membershipOfGroup ;
+        sh:path :group ;
         sh:class :ParliamentaryGroup ;
         sh:maxCount 1 ;
         sh:message "Each Membership must be associated to at maximum 1 Parliamentary Group"@en, "Cada Membership deverá ter no máximo 1 Grupo Parlamentar"@pt ;
-    ] ;
-    sh:property [
-        sh:path :memberDuringLegislature ;
-        sh:class :Legislature ;
-        sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:message "Each Membership must be associated to exactly 1 Legislature"@en, 
-            "Cada Membership deverá ter exatamente 1 Legislatura"@pt ;
     ] ;
     sh:property [
         sh:path schema:startDate ;
@@ -151,7 +111,7 @@
     a sh:NodeShape ;
     sh:targetClass :Legislature ;
     sh:property [
-        sh:path :hasSession ;
+        sh:path :session ;
         sh:class :LegislativeSession ;
     ] ;
     sh:property [
@@ -183,7 +143,7 @@
     a sh:NodeShape ;
     sh:targetClass :LegislativeSession ;
     sh:property [
-        sh:path :duringLegislature ;
+        sh:path :legislature ;
         sh:class :Legislature ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
@@ -222,12 +182,11 @@
     a sh:NodeShape ;
     sh:targetClass :ElectoralCircle ;
     sh:property [
-        sh:path :inLegislature ;
+        sh:path :legislatures ;
         sh:class :Legislature ;
         sh:minCount 1 ;
-        sh:maxCount 1 ;
-        sh:message "Each Electoral Circle must be associated to exactly 1 Legislature"@en, 
-            "Cada Círculo Eleitoral deverá ter exatamente 1 Legislatura"@pt ;
+        sh:message "Each Electoral Circle must be associated to at least one Legislature"@en, 
+            "Cada Círculo Eleitoral deverá ter pelo menos uma Legislatura"@pt ;
     ] ;
     sh:property[
         sh:path rdfs:label ;
@@ -278,3 +237,38 @@
         sh:minCount 1 ;
         sh:message "Situation Type must have one prefLabel"@en, "Tipo de Situação (Situation Type) deve ter um prefLabel"@pt
     ] .
+
+:LegislatureContextShape
+    a sh:NodeShape ;
+    sh:targetClass :LegislatureContext ;
+    sh:property [
+        sh:path :legislature ;
+        sh:class :Legislature ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Each Legislature Context must be associated with exactly 1 Legislature"@en, "Cada Contexto de Legislatura deverá estar associado a exatamente 1 Legislatura"@pt ;
+    ] ;
+    sh:property [
+        sh:path :membership ;
+        sh:class :Membership ;
+        sh:minCount 1 ;
+        sh:message "Each Legislature Context must have at least 1 Membership"@en, "Cada Contexto de Legislatura deverá ter pelo menos 1 Membership"@pt ;
+    ] ;
+    sh:property [
+        sh:path :duty ;
+        sh:class :Duty ;
+    ] ;
+    sh:property [
+        sh:path :electoralCircle ;
+        sh:class :ElectoralCircle ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Each Legislature Context must have exactly 1 Electoral Circle"@en, "Cada Contexto de Legislatura deverá ter exatamente 1 Círculo Eleitoral"@pt ;
+    ] ;
+    sh:property [
+        sh:path :situation ;
+        sh:class :Situation ;
+        sh:minCount 1 ;
+        sh:message "Each Legislature Context must have at least 1 Situation"@en, "Cada Contexto de Legislatura deverá ter pelo menos 1 Situação"@pt ;
+    ]
+.

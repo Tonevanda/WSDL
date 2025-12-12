@@ -34,6 +34,7 @@ def main():
         g = convert_infobase_to_rdf(xml_obj, g)
     
     # Registo Biográfico
+    """
     for url in bio_urls:
         response = requests.get(url)
         if response.status_code != 200:
@@ -45,7 +46,7 @@ def main():
         xml_obj = XMLObject(cleaned_data)
         
         g = convert_bio_to_rdf(xml_obj, g)
-
+    """
     # Validate the graph
     _, _, results_text = validate(
         data_graph=g,
