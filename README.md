@@ -17,5 +17,5 @@ uv sync
 Then run:
 
 ```sh
-uv run python main.py
+uv run python src/main.py
 ```
