@@ -175,14 +175,14 @@ def build_electoral_circles(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
     for id, name in circles.items():
         uri_name = name.replace(' ', '_')
 
-        uri = POLI[f"{uri_name}_{leg_id}"]
+        uri = POLI[uri_name]
         g.add((uri, RDF.type, POLI.ElectoralCircle))
         g.add((uri, RDFS.label, Literal(name, lang="pt")))
         g.add((uri, DCTERMS.identifier, Literal(id, datatype=XSD.float)))
         g.add((uri, POLI.legislature, leg_uri))
 
         wd_link = get_electoral_circles_link(name)
-        if wd_link is not None: g.add((uri, SCHEMA.about, "http://www.wikidata.org/wiki/"+wd_link))
+        if wd_link is not None: g.add((uri, OWL.sameAs, "http://www.wikidata.org/wiki/"+wd_link))
     
     return g
 
