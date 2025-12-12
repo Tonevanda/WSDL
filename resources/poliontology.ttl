@@ -132,6 +132,18 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
                rdfs:range skos:Concept .
 
 
+:habilitation rdf:type owl:ObjectProperty ;
+               rdfs:domain :MoP ;
+               rdfs:range :Habilitation .
+
+:hasRole rdf:type owl:ObjectProperty ;
+               rdfs:domain :MoP ;
+               rdfs:range :Role .
+
+:hasAcademicTitle rdf:type owl:ObjectProperty ;
+               rdfs:domain :MoP ;
+               rdfs:range :Academic_Title .
+
 #################################################################
 #    Data properties
 #################################################################
@@ -148,6 +160,9 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
                    rdfs:domain :MoP ;
                    rdfs:range xsd:string .
 
+:tipoId rdf:type owl:DatatypeProperty ;
+                   rdfs:domain :Habilitation ;
+                   rdfs:range xsd:int .
 
 #################################################################
 #    Classes
@@ -193,6 +208,12 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/Situation
 :Situation rdf:type owl:Class .
 
+
+:Habilitation rdf:type owl:Class .
+
+:Role rdf:type owl:Class .
+
+:Academic_Title rdf:type owl:Class .
 
 ###  http://www.w3.org/2004/02/skos/core#Concept
 skos:Concept rdf:type owl:Class .
