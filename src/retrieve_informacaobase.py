@@ -178,7 +178,7 @@ def build_electoral_circles(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, RDF.type, POLI.ElectoralCircle))
         g.add((uri, RDFS.label, Literal(name, lang="pt")))
         g.add((uri, DCTERMS.identifier, Literal(id, datatype=XSD.float)))
-        g.add((uri, POLI.inLegislature, leg_uri))
+        g.add((uri, POLI.legislature, leg_uri))
     
     return g
 
@@ -194,7 +194,7 @@ def build_legislative_session(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, SCHEMA.position, Literal(session, datatype=XSD.int)))
         g.add((uri, SCHEMA.startDate, Literal(items[0], datatype=XSD.date)))
         if items[1] is not None: g.add((uri, SCHEMA.endDate, Literal(items[1], datatype=XSD.date)))
-        g.add((uri, POLI.duringLegislature, leg_uri))
+        g.add((uri, POLI.legislature, leg_uri))
 
     return g
 
@@ -211,13 +211,12 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
 
             uri = POLI[f"{clean_name}_{leg_id}_{acronym}"]
             g.add((uri, RDF.type, POLI.Membership))
-            g.add((uri, POLI.membershipOfGroup, pg_uri))
-            g.add((uri, POLI.memberDuringLegislature, leg_uri))
+            g.add((uri, POLI.group, pg_uri))
             g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
             if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
 
 
-            g.add((mp_uri, POLI.hasMembership, uri))
+            g.add((mp_uri, POLI.membership, uri))
         
         return g
 
@@ -241,7 +240,7 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
             g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
             if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
 
-            g.add((mp_uri, POLI.inSituation, uri))
+            g.add((mp_uri, POLI.situation, uri))
 
         return g
 
@@ -269,7 +268,7 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
             g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
             if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
 
-            g.add((mp_uri, POLI.hasDuty, uri))
+            g.add((mp_uri, POLI.duty, uri))
 
         return g
     
@@ -291,11 +290,13 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, POLI.parliamentaryName, Literal(parliamentaryName, datatype=XSD.string)))
         g.add((uri, POLI.bid, Literal(bid, datatype=XSD.int)))
         g.add((uri, DCTERMS.identifier, Literal(int(id), datatype=XSD.int)))
-        g.add((uri, POLI.servesDuring, leg_uri))
-        g.add((uri, POLI.electedIn, ec_uri))
 
-        g = build_membership(mp, uri, g)
-        g = build_situation(mp, uri, g)
-        g = build_duty(mp, uri, g)
+        legislature_context_uri = POLI[f"{clean_name}_{leg_id}"]
+        g.add((legislature_context_uri, POLI.legislature, leg_uri))
+        g.add((legislature_context_uri, POLI.electoralCircle, ec_uri))
+
+        g = build_membership(mp, legislature_context_uri, g)
+        g = build_situation(mp, legislature_context_uri, g)
+        g = build_duty(mp, legislature_context_uri, g)
 
     return g
