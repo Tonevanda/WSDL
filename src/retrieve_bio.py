@@ -49,7 +49,7 @@ def build_academic_titles(xml_obj: XMLObject, g: Graph, mop_uri: URIRef):
         if tit_id and tit_des:
             # Create a BNode for the academic title
             title_node = BNode()
-            g.add((title_node, RDF.type, POLI.Academic_Title))
+            g.add((title_node, RDF.type, POLI.AcademicTitle))
             g.add((title_node, RDFS.label, Literal(tit_des, datatype=XSD.string)))
             
             # Link to MoP
