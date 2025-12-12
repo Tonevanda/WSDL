@@ -272,3 +272,47 @@
         sh:message "Each Legislature Context must have at least 1 Situation"@en, "Cada Contexto de Legislatura deverá ter pelo menos 1 Situação"@pt ;
     ]
 .
+
+:HabilitationShape
+    a sh:NodeShape ;
+    sh:targetClass :Habilitation ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Each Habilitation must have exactly 1 label"@en, "Cada Habilitação deverá ter exatamente 1 label"@pt ;
+    ] ;
+    sh:property [
+        sh:path :tipoId ;
+        sh:datatype xsd:int ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minInclusive 0 ;
+        sh:message "Each Habilitation must have exactly 1 tipoId (e.g., 0=Various, 9=1º Ciclo, 10=2º Ciclo, 11=3º Ciclo, 12=Ensino Secundário, 13=Licenciatura, 14=Mestrado, 15=Doutoramento, 16=Pós-graduação)"@en, "Cada Habilitação deverá ter exatamente 1 tipoId (ex: 0=Vários, 9=1º Ciclo, 10=2º Ciclo, 11=3º Ciclo, 12=Ensino Secundário, 13=Licenciatura, 14=Mestrado, 15=Doutoramento, 16=Pós-graduação)"@pt ;
+    ]
+.
+
+:AcademicTitleShape
+    a sh:NodeShape ;
+    sh:targetClass :Academic_Title ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Each Academic Title must have exactly 1 label"@en, "Cada Título Académico deverá ter exatamente 1 label"@pt ;
+    ]
+.
+
+:RoleShape
+    a sh:NodeShape ;
+    sh:targetClass :Role ;
+    sh:property [
+        sh:path rdfs:label ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message "Each Role must have exactly 1 label"@en, "Cada Cargo/Função deverá ter exatamente 1 label"@pt ;
+    ]
+.
