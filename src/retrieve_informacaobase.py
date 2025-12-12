@@ -199,7 +199,7 @@ def build_legislative_session(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
     return g
 
 def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
-    def build_membership(mp: XMLObject, mp_uri, g: Graph):
+    def build_membership(mp: XMLObject, ctx_uri, g: Graph):
 
         element = mp.find_first_element_by_name('DepGP')
 
@@ -209,18 +209,19 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
             start_date = get_attribute(pg, 'gpDtInicio')
             end_date = get_attribute(pg, 'gpDtFim')
 
-            uri = POLI[f"{clean_name}_{leg_id}_{acronym}"]
-            g.add((uri, RDF.type, POLI.Membership))
-            g.add((uri, POLI.group, pg_uri))
-            g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
-            if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+            
+            bnode = BNode()
+            g.add((bnode, RDF.type, POLI.Membership))
+            g.add((bnode, POLI.group, pg_uri))
+            g.add((bnode, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
+            if end_date is not None: g.add((bnode, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
 
 
-            g.add((mp_uri, POLI.membership, uri))
+            g.add((ctx_uri, POLI.membership, bnode))
         
         return g
 
-    def build_situation(mp: XMLObject, mp_uri, g: Graph):
+    def build_situation(mp: XMLObject, ctx_uri, g: Graph):
         element = mp.find_first_element_by_name('DepSituacao')
         
         for st in element.find_elements_by_name("pt_ar_wsgode_objectos_DadosSituacaoDeputado"):
@@ -234,17 +235,17 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
             g.add((sit_uri, SKOS.prefLabel, Literal(situation, lang="pt")))
             g.add((sit_uri, SKOS.inScheme, POLI["SituationTypeScheme"]))
 
-            uri = POLI[f"{clean_name}_{start_date}_{clean_sit}"]
-            g.add((uri, RDF.type, POLI.Situation))
-            g.add((uri, POLI.hasSituationType, sit_uri))
-            g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
-            if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+            bnode = BNode()
+            g.add((bnode, RDF.type, POLI.Situation))
+            g.add((bnode, POLI.hasSituationType, sit_uri))
+            g.add((bnode, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
+            if end_date is not None: g.add((bnode, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
 
-            g.add((mp_uri, POLI.situation, uri))
+            g.add((ctx_uri, POLI.situation, bnode))
 
         return g
 
-    def build_duty(mp: XMLObject, mp_uri, g: Graph):
+    def build_duty(mp: XMLObject, ctx_uri: BNode, g: Graph):
         element = mp.find_first_element_by_name('DepCargo')
 
         if element is None: return g
@@ -262,13 +263,14 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
             g.add((duty_uri, SKOS.inScheme, POLI["DutyTypeScheme"]))
             g.add((duty_uri, DCTERMS.identifier, Literal(id, datatype=XSD.int) ))
 
-            uri = POLI[f"{clean_name}_{start_date}_Duty"]
-            g.add((uri, RDF.type, POLI.Duty))
-            g.add((uri, POLI.hasSituationType, duty_uri))
-            g.add((uri, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
-            if end_date is not None: g.add((uri, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+            bnode = BNode()
 
-            g.add((mp_uri, POLI.duty, uri))
+            g.add((bnode, RDF.type, POLI.Duty))
+            g.add((bnode, POLI.situationType, duty_uri))
+            g.add((bnode, SCHEMA.startDate, Literal(start_date, datatype=XSD.date)))
+            if end_date is not None: g.add((bnode, SCHEMA.endDate, Literal(end_date, datatype=XSD.date)))
+
+            g.add((ctx_uri, POLI.duty, bnode))
 
         return g
     
@@ -291,12 +293,12 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, POLI.bid, Literal(bid, datatype=XSD.int)))
         g.add((uri, DCTERMS.identifier, Literal(int(id), datatype=XSD.int)))
 
-        legislature_context_uri = POLI[f"{clean_name}_{leg_id}"]
-        g.add((legislature_context_uri, POLI.legislature, leg_uri))
-        g.add((legislature_context_uri, POLI.electoralCircle, ec_uri))
+        ctx = BNode()
+        g.add((ctx, POLI.legislature, leg_uri))
+        g.add((ctx, POLI.electoralCircle, ec_uri))
 
-        g = build_membership(mp, legislature_context_uri, g)
-        g = build_situation(mp, legislature_context_uri, g)
-        g = build_duty(mp, legislature_context_uri, g)
+        g = build_membership(mp, ctx, g)
+        g = build_situation(mp, ctx, g)
+        g = build_duty(mp, ctx, g)
 
     return g
