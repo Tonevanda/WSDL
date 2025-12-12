@@ -46,4 +46,8 @@ def get_electoral_circles_link(name: str) -> str | None:
             return "Q59193855"
         case "Lisboa":
             return "Q43187878"
+        case _:
+            print(f"Couldn't link electoral circle {name}")
+            return None
+
     return None
