@@ -17,7 +17,6 @@ def convert_infobase_to_rdf(xml_obj, g):
 
 def convert_bio_to_rdf(xml_obj, g):
 
-    g = build_occupation(xml_obj, g)
-    g = build_habilitations(xml_obj, g)
+    g = build_biographical_data(xml_obj, g)
 
     return g

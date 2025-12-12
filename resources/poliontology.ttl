@@ -155,7 +155,8 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
 #################################################################
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/AcademicTitle
-:AcademicTitle rdf:type owl:Class .
+:AcademicTitle rdf:type owl:Class ;
+               owl:equivalentClass schema:EducationalOccupationalCredential .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/Duty
@@ -167,7 +168,8 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/Habilitation
-:Habilitation rdf:type owl:Class .
+:Habilitation rdf:type owl:Class ;
+              owl:equivalentClass schema:EducationalAlignment .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/InterestRegistry

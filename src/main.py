@@ -18,7 +18,7 @@ def main():
 
     g = Graph()
     g.bind("poli", POLI)
-    g.parse("../resources/poliontology.ttl", format="turtle")
+    g.parse("./resources/poliontology.ttl", format="turtle")
 
     # Informação Base
     for url in infourls:
@@ -34,7 +34,7 @@ def main():
         g = convert_infobase_to_rdf(xml_obj, g)
     
     # Registo Biográfico
-    """
+
     for url in bio_urls:
         response = requests.get(url)
         if response.status_code != 200:
@@ -46,16 +46,16 @@ def main():
         xml_obj = XMLObject(cleaned_data)
         
         g = convert_bio_to_rdf(xml_obj, g)
-    """
+
     # Validate the graph
     _, _, results_text = validate(
         data_graph=g,
-        shacl_graph=Graph().parse("../resources/shacl.ttl", format="turtle"),
+        shacl_graph=Graph().parse("./resources/shacl.ttl", format="turtle"),
     )
     print("Validation Results: \n", results_text)
 
     # Save the file
-    g.serialize(destination="test.ttl", format="turtle")
+    g.serialize(destination="./resources/test.ttl", format="turtle")
 
 if __name__ == "__main__":
     main()
