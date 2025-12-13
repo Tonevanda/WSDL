@@ -295,6 +295,7 @@ def build_mp(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, SCHEMA.name, Literal(name, datatype=XSD.string)))
         
         g.add((uri, DCTERMS.identifier, Literal(bid, datatype=XSD.int)))
+        g.add((uri, OWL.sameAs, URIRef("https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID="+str(bid))))
 
         ctx = BNode()
         g.add((uri, POLI.servedDuring, ctx))
