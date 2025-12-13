@@ -53,8 +53,8 @@ def query_academic_titles_leg(g: Graph):
     for row in g.query(query):
         print(f"{row.legDesc} tem {row.total} títulos académicos")
 
-def query(g: Graph):
-    
+def query_leg_electorate_area(g: Graph):
+    # Regiões com mais eleitores e a respetiva área com estatísticas dos deputados
     query_area = """
     PREFIX : <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/>
     PREFIX schema: <https://schema.org/>
@@ -63,16 +63,109 @@ def query(g: Graph):
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT DISTINCT ?circleName ?electorate ?area 
+           (COUNT(DISTINCT ?mop) as ?totalMoPs)
+           (COUNT(DISTINCT ?title) as ?totalTitles)
+           (COUNT(DISTINCT ?duty) as ?totalDuties)
+           (GROUP_CONCAT(DISTINCT ?party; separator=", ") as ?parties)
+    WHERE {
+        ?circle a :ElectoralCircle ;
+                rdfs:label ?circleName ;
+                :legislatures :XVII ;
+                owl:sameAs ?wd .
+        
+        FILTER(LANG(?circleName) = 'pt')
+        
+        SERVICE <https://query.wikidata.org/sparql> {
+            ?wd wdt:P1831 ?electorate .
+            FILTER(?electorate > 1000000)
 
+            OPTIONAL {
+                ?wd wdt:P131 ?region .
+                ?region wdt:P2046 ?area .
+            }
+        }
+        
+        # Add data from your ontology
+        ?context :electoralCircle ?circle ;
+                 :legislature :XVII .
+        
+        ?mop :servedDuring ?context .
+        
+        OPTIONAL {
+            ?context :membership ?membership .
+            ?membership :group ?group .
+            ?group skos:altLabel ?party .
+        }
+        
+        OPTIONAL {
+            ?mop :hasAcademicTitle ?title .
+        }
+        
+        OPTIONAL {
+            ?context :duty ?duty .
+        }
+    }
+    GROUP BY ?circleName ?electorate ?area
+    ORDER BY DESC(?electorate)
     """
    
     for row in g.query(query_area):
-        print(f"{row.mopName} - {row.circleName} - {row.label}")
+        area = f"{int(row.area):,} km²" if row.area else "N/A"
+        print(f"\n{row.circleName}")
+        print(f"  Eleitores: {int(row.electorate):,}")
+        print(f"  Área: {area}")
+        print(f"  Deputados: {row.totalMoPs}")
+        print(f"  Títulos Académicos: {row.totalTitles}")
+        print(f"  Cargos: {row.totalDuties}")
+        print(f"  Partidos: {row.parties}")
+
+def query_uni_teach_electorate(g: Graph):
+    # Professores universitários em círculos eleitorais com mais de 1 milhão de eleitores
+    query_area = """
+    PREFIX : <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/>
+    PREFIX schema: <https://schema.org/>
+    PREFIX owl: <http://www.w3.org/2002/07/owl#>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
+    SELECT DISTINCT ?circleName ?electorate #?mopName ?circleName ?jobTitle ?electorate
+    WHERE {
+        # First, get electoral circles with > 1M electorate from Wikidata
+        ?circle a :ElectoralCircle ;
+                rdfs:label ?circleName ;
+                :legislatures :XVII ;
+                owl:sameAs ?wd .
+        
+        SERVICE <https://query.wikidata.org/sparql> {
+            ?wd wdt:P1831 ?electorate .
+            FILTER(?electorate > 1000000)
+        }
+        
+        #?circle ^:electoralCircle ?ctx .
+        #?ctx ^:servedDuring ?mop .
+        #
+        #?mop schema:name ?mopName ;
+        #    :jobTitle ?jobTitle .
+        #
+        #FILTER(REGEX(?jobTitle, "universitári", "i"))
+    }
+    ORDER BY DESC(?electorate) # ?mopName
+    """
+
+def query_runner(g: Graph):
+    print("=== 1. Quais os partidos com mais deputados sociólogos? ===")
+    query_sociologia_party(g)
+    print("=== 2. Qual a quantidade de academic titles por legislatura? ===")
+    query_academic_titles_leg(g)
 
 def main():
     g = Graph()
     g.parse("./resources/test.ttl", format="turtle")
-    query_academic_titles_leg(g)
+    query_leg_electorate_area(g)
 
 if __name__ == "__main__":
     main()
