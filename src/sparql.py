@@ -86,11 +86,12 @@ def query_leg_electorate_area(g: Graph):
         }
         
         ?circle ^:electoralCircle ?context .
-        ?context :situation ?sit .
+        ?context :legislature :XVII ;
+                 :situation ?sit ;
+                 :membership ?membership ;
+                 ^:servedDuring ?mop .
+        
         ?sit :situationType :Efetivo .
-
-        ?context :membership ?membership ;
-            ^:servedDuring ?mop .
 
         ?membership :group ?group .
         ?group skos:altLabel ?party .
