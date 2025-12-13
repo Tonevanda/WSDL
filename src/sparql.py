@@ -310,8 +310,8 @@ def query_runner(g: Graph):
 def main():
     g = Graph()
     g.parse("./resources/test.ttl", format="turtle")
-    query_ratio(g)
-    #query_runner(g)
+    #query_ratio(g)
+    query_runner(g)
 
 if __name__ == "__main__":
     main()
