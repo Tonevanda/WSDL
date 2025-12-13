@@ -120,6 +120,15 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
               rdfs:range :LegislatureContext .
 
 
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/servedInLegislature
+:servedInLegislature rdf:type owl:ObjectProperty ;
+                     rdfs:domain :MoP ;
+                     rdfs:range :Legislature ;
+                     owl:propertyChainAxiom ( :servedDuring
+                                              :legislature
+                                            ) .
+
+
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/situation
 :situation rdf:type owl:ObjectProperty ;
            rdfs:domain :LegislatureContext ;

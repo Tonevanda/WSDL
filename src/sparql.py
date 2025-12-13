@@ -244,6 +244,54 @@ def query_mp_change_metadata(g: Graph):
             for mp in mps:
                 print(f"    {mp['name']} - {mp['job']} - {mp['change']}")
     
+def query_ratio(g: Graph):
+    query = """
+    PREFIX : <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/>
+    PREFIX schema: <https://schema.org/>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+    SELECT ?party 
+           (COUNT(?mopMale) as ?totalMale)
+           (COUNT(?mopFemale) as ?totalFemale)
+           (IF(COUNT(?mopFemale) > 0, COUNT(?mopMale) /COUNT(?mopFemale), COUNT(?mopMale)) as ?ratio)
+    WHERE {
+        ?mop a :MoP ;
+            :servedDuring ?ctx .
+        
+        ?ctx :membership ?mem .
+        ?mem :group ?group .
+        ?group skos:altLabel ?party .
+        
+        OPTIONAL {
+            ?mop schema:gender ?m .
+            FILTER(REGEX(?m, "M", "i"))
+            BIND(?mop as ?mopMale)
+        }
+        
+        OPTIONAL {
+            ?mop schema:gender ?f .
+            FILTER(REGEX(?f, "F", "i"))
+            BIND(?mop as ?mopFemale)
+        }
+    }
+    GROUP BY ?party
+    ORDER BY ASC(?ratio)
+    """
+    
+    print(f"{'Parliamentary Group':<30} {'Men':<10} {'Women':<10} {'Total':<10} {'Ratio (M:F)'}")
+    print("=" * 80)
+    
+    for row in g.query(query):
+        total_male = int(row.totalMale)
+        total_female = int(row.totalFemale)
+        total = total_male + total_female
+        
+        if total_female > 0:
+            ratio = f"{total_male}:{total_female} ({total_male/total_female:.2f}:1)"
+        else:
+            ratio = f"{total_male}:0"
+        
+        print(f"{row.party:<30} {total_male:<10} {total_female:<10} {total:<10} {ratio}")
 
 def query_runner(g: Graph):
     print("=== 1. How many MP's with a Sociology Habilitation has each Parliamentary Group had? ===")
@@ -256,12 +304,14 @@ def query_runner(g: Graph):
     query_party_efetivo_direito_leg(g)
     print("\n=== 5. Per Legislature, which MPs from which Parliamentary Group, started as Permanent but aren't permanent as the latest situation and what jobs do they have? ===")
     query_mp_change_metadata(g)
+    print("\n=== 6. Overall Ratio Man vs Woman per Parliamentary Group ===")
+    query_ratio(g)
 
 def main():
     g = Graph()
     g.parse("./resources/test.ttl", format="turtle")
-    
-    query_runner(g)
+    query_ratio(g)
+    #query_runner(g)
 
 if __name__ == "__main__":
     main()
