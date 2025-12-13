@@ -86,6 +86,14 @@ def build_occupation(xml_obj: XMLObject, g: Graph, mop_uri: URIRef):
     
     return g
 
+def build_sex(xml_obj: XMLObject, g: Graph, mop_uri: URIRef):
+    sex = get_attribute(xml_obj, 'CadSexo')
+
+    if sex:
+        g.add((mop_uri, SCHEMA.gender, Literal(sex, datatype=XSD.string)))
+
+    return g
+
 def build_biographical_data(xml_obj: XMLObject, g: Graph):
     # Find all biographical records
     for bio_record in xml_obj.find_elements_by_name('DadosRegistoBiografico'):
@@ -103,6 +111,7 @@ def build_biographical_data(xml_obj: XMLObject, g: Graph):
         has_role = (mop_uri, POLI.hasRole, None) in g
         has_title = (mop_uri, POLI.hasAcademicTitle, None) in g
         
+        g = build_sex(bio_record, g, mop_uri)
         g = build_occupation(bio_record, g, mop_uri)
 
         if not has_habilitation:
