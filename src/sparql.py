@@ -27,7 +27,7 @@ def query_sociologia_party(g: Graph):
     """
 
     for row in g.query(query):
-        print(f"{row.party} tem {row.total} deputados Sociólogos")
+        print(f"{row.party} has {row.total} MPs with a Sociology Habilitation")
     
 def query_academic_titles_leg(g: Graph):
      # Qual a quantidade de academic titles por legislatura
@@ -51,7 +51,7 @@ def query_academic_titles_leg(g: Graph):
     """
     
     for row in g.query(query):
-        print(f"{row.legDesc} tem {row.total} títulos académicos")
+        print(f"{row.legDesc} has a total of {row.total} academic titles")
 
 def query_leg_electorate_area(g: Graph):
     # Regiões com mais eleitores e a respetiva área com estatísticas dos deputados
@@ -66,8 +66,8 @@ def query_leg_electorate_area(g: Graph):
     
     SELECT DISTINCT ?circleName ?electorate ?area 
            (COUNT(DISTINCT ?mop) as ?totalMoPs)
-           (COUNT(DISTINCT ?title) as ?totalTitles)
-           (COUNT(DISTINCT ?duty) as ?totalDuties)
+           (COUNT(?title) as ?totalTitles)
+           (COUNT(?duty) as ?totalDuties)
            (GROUP_CONCAT(DISTINCT ?party; separator=", ") as ?parties)
     WHERE {
         ?circle a :ElectoralCircle ;
@@ -111,25 +111,80 @@ def query_leg_electorate_area(g: Graph):
     for row in g.query(query_area):
         area = f"{int(row.area):,} km²" if row.area else "N/A"
         print(f"\n{row.circleName}")
-        print(f"  Eleitores: {int(row.electorate):,}")
-        print(f"  Área: {area}")
-        print(f"  Deputados Efetivos: {row.totalMoPs}")
-        print(f"  Títulos Académicos: {row.totalTitles}")
-        print(f"  Cargos: {row.totalDuties}")
-        print(f"  Partidos: {row.parties}")
+        print(f"  Voters: {int(row.electorate):,}")
+        print(f"  Area: {area}")
+        print(f"  Permanent MPs: {row.totalMoPs}")
+        print(f"  Academic Titles: {row.totalTitles}")
+        print(f"  Duties: {row.totalDuties}")
+        print(f"  Parliamentary Groups: {row.parties}")
+
+def query_party_efetivo_direito_leg(g: Graph):
+    # Por partido quantos deputados efetivos tem habilitacao "direito" por legislatura
+    query = """
+    PREFIX : <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX schema: <https://schema.org/>
+
+    SELECT ?legDesc ?party (COUNT(DISTINCT ?mop) as ?total)
+    WHERE {
+        ?hab a :Habilitation ;
+            rdfs:label ?habName .
+        FILTER(REGEX(?habName, "direito", "i"))
+
+        ?hab ^:habilitation ?mop .
+        ?mop :servedDuring ?ctx .
+        
+        ?ctx :legislature ?leg ;
+             :membership ?mem ;
+             :situation ?sit .
+        
+        ?leg rdfs:label ?legDesc .
+        FILTER(LANG(?legDesc) = 'pt')
+        
+        ?sit :situationType :Efetivo ;
+            schema:startDate ?start .
+
+        FILTER NOT EXISTS {
+            ?ctx :situation ?otherSit .
+            ?otherSit schema:startDate ?otherStart .
+            FILTER(?otherStart > ?start)
+        }
+        
+        ?mem :group ?group .
+        ?group skos:altLabel ?party .
+    }
+    GROUP BY ?legDesc ?party
+    ORDER BY ?legDesc DESC(?total)
+    """
+
+    results = {}
+    for row in g.query(query):
+        if row.legDesc not in results:
+            results[row.legDesc] = []
+        results[row.legDesc].append((row.party, row.total))
+    
+    for leg, parties in results.items():
+        print(f"\n{leg}:")
+        for party, total in parties:
+            print(f"  {party} - {total} MPs with a Law habilitation")
+
 
 def query_runner(g: Graph):
-    print("=== 1. Quais os partidos com mais deputados sociólogos? ===")
+    print("=== 1. How many MP's with a Sociology Habilitation has each Parliamentary Group had? ===")
     query_sociologia_party(g)
-    print("\n=== 2. Qual a quantidade de títulos academicos por legislatura? ===")
+    print("\n=== 2. How many Academic Titles are in each Legislature? ===")
     query_academic_titles_leg(g)
-    print("\n=== 3. Informações relevantes sobre círculos eleitorais com mais de 1M de votantes (segundo o WikiData), durante a XVII Legislatura ===")
+    print("\n=== 3. Relevant information retrieval about Electoral Circles with >1M electorate (according to WikiData), during the XVII Legislature ===")
     query_leg_electorate_area(g)
+    print("\n=== 4. Per Legislature, how many MPs per Parliamentary Group, whose most recent situation was as Effective, have a Law Habilitation ===")
+    query_party_efetivo_direito_leg(g)
 
 def main():
     g = Graph()
     g.parse("./resources/test.ttl", format="turtle")
-    #query_leg_electorate_area(g)
+    
+    #query_party_efetivo_direito_leg(g)
     query_runner(g)
 
 if __name__ == "__main__":
