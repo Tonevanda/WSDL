@@ -53,7 +53,7 @@ def build_academic_titles(xml_obj: XMLObject, g: Graph, mop_uri: URIRef):
             g.add((title_node, RDFS.label, Literal(tit_des, datatype=XSD.string)))
             
             # Link to MoP
-            g.add((mop_uri, POLI.hasAcademicTitle, title_node))
+            g.add((mop_uri, POLI.academicTitle, title_node))
     
     return g
 
@@ -74,7 +74,7 @@ def build_roles(xml_obj: XMLObject, g: Graph, mop_uri: URIRef):
             g.add((role_node, RDFS.label, Literal(fun_des, datatype=XSD.string)))
             
             # Link to MoP
-            g.add((mop_uri, POLI.hasRole, role_node))
+            g.add((mop_uri, POLI.role, role_node))
     
     return g
 

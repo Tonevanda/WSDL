@@ -43,6 +43,12 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
 #    Object Properties
 #################################################################
 
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/academicTitle
+:academicTitle rdf:type owl:ObjectProperty ;
+               rdfs:domain :MoP ;
+               rdfs:range :AcademicTitle .
+
+
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/duty
 :duty rdf:type owl:ObjectProperty ;
       rdfs:domain :LegislatureContext ;
@@ -76,22 +82,9 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
               rdfs:range :Habilitation .
 
 
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/hasAcademicTitle
-:hasAcademicTitle rdf:type owl:ObjectProperty ;
-                  rdfs:domain :MoP ;
-                  rdfs:range :AcademicTitle .
-
-
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/hasRole
-:hasRole rdf:type owl:ObjectProperty ;
-         rdfs:domain :MoP ;
-         rdfs:range :Role .
-
-
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/legislature
-:legislature rdf:type owl:ObjectProperty ;
-             owl:inverseOf :session ;
-             rdf:type owl:FunctionalProperty ;
+:legislature rdf:type owl:ObjectProperty ,
+                      owl:FunctionalProperty ;
              rdfs:domain :LegislativeSession ,
                          :LegislatureContext ;
              rdfs:range :Legislature .
@@ -109,16 +102,16 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
             rdfs:range :Membership .
 
 
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/role
+:role rdf:type owl:ObjectProperty ;
+      rdfs:domain :MoP ;
+      rdfs:range :Role .
+
+
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/servedDuring
 :servedDuring rdf:type owl:ObjectProperty ;
               rdfs:domain :MoP ;
               rdfs:range :LegislatureContext .
-
-
-###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/session
-:session rdf:type owl:ObjectProperty ;
-         rdfs:domain :Legislature ;
-         rdfs:range :LegislativeSession .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/situation
@@ -177,7 +170,8 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/LegislativeSession
-:LegislativeSession rdf:type owl:Class .
+:LegislativeSession rdf:type owl:Class ;
+                    owl:disjointWith :LegislatureContext .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/Legislature
@@ -235,6 +229,14 @@ ocd:gruppoParlamentare rdf:type owl:Class .
 
 ###  https://example.org/map4scrutiny/core#Parlamentarian
 m4sc:Parlamentarian rdf:type owl:Class .
+
+
+###  https://schema.org/EducationalAlignment
+schema:EducationalAlignment rdf:type owl:Class .
+
+
+###  https://schema.org/EducationalOccupationalCredential
+schema:EducationalOccupationalCredential rdf:type owl:Class .
 
 
 ###  https://schema.org/Person

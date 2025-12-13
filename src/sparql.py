@@ -39,7 +39,7 @@ def query_academic_titles_leg(g: Graph):
     SELECT ?legDesc (COUNT(?title) as ?total)
     WHERE {
         ?mop a :MoP ;
-            :hasAcademicTitle ?title ;
+            :academicTitle ?title ;
             :servedDuring ?ctx .
         
         ?ctx :legislature ?leg .
@@ -97,7 +97,7 @@ def query_leg_electorate_area(g: Graph):
         ?group skos:altLabel ?party .
         
         OPTIONAL {
-            ?mop :hasAcademicTitle ?title .
+            ?mop :academicTitle ?title .
         }
         
         OPTIONAL {

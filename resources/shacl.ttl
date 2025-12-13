@@ -28,7 +28,23 @@
         sh:minCount 1 ;
         sh:maxCount 1 ;
         sh:message "Each MoP must have exactly 1 id"@en, "Cada MoP (deputado) deverá ter exatamente 1 id"@pt ;
-    ] 
+    ] ;
+    sh:property [
+        sh:path schema:jobTitle ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:path :habilitation ;
+        sh:class :Habilitation ;
+    ] ;
+    sh:property [
+        sh:path :role ;
+        sh:class :Role ;
+    ] ;
+    sh:property [
+        sh:path :academicTitle ;
+        sh:class :AcademicTitle ;
+    ]
 .
 
 :MembershipShape
@@ -295,7 +311,7 @@
 
 :AcademicTitleShape
     a sh:NodeShape ;
-    sh:targetClass :Academic_Title ;
+    sh:targetClass :AcademicTitle ;
     sh:property [
         sh:path rdfs:label ;
         sh:datatype xsd:string ;
