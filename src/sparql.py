@@ -113,56 +113,24 @@ def query_leg_electorate_area(g: Graph):
         print(f"\n{row.circleName}")
         print(f"  Eleitores: {int(row.electorate):,}")
         print(f"  Área: {area}")
-        print(f"  Deputados: {row.totalMoPs}")
+        print(f"  Deputados Efetivos: {row.totalMoPs}")
         print(f"  Títulos Académicos: {row.totalTitles}")
         print(f"  Cargos: {row.totalDuties}")
         print(f"  Partidos: {row.parties}")
 
-def query_uni_teach_electorate(g: Graph):
-    # Professores universitários em círculos eleitorais com mais de 1 milhão de eleitores
-    query_area = """
-    PREFIX : <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/>
-    PREFIX schema: <https://schema.org/>
-    PREFIX owl: <http://www.w3.org/2002/07/owl#>
-    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
-    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-    PREFIX wd: <http://www.wikidata.org/entity/>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    
-    SELECT DISTINCT ?circleName ?electorate #?mopName ?circleName ?jobTitle ?electorate
-    WHERE {
-        # First, get electoral circles with > 1M electorate from Wikidata
-        ?circle a :ElectoralCircle ;
-                rdfs:label ?circleName ;
-                :legislatures :XVII ;
-                owl:sameAs ?wd .
-        
-        SERVICE <https://query.wikidata.org/sparql> {
-            ?wd wdt:P1831 ?electorate .
-            FILTER(?electorate > 1000000)
-        }
-        
-        #?circle ^:electoralCircle ?ctx .
-        #?ctx ^:servedDuring ?mop .
-        #
-        #?mop schema:name ?mopName ;
-        #    :jobTitle ?jobTitle .
-        #
-        #FILTER(REGEX(?jobTitle, "universitári", "i"))
-    }
-    ORDER BY DESC(?electorate) # ?mopName
-    """
-
 def query_runner(g: Graph):
     print("=== 1. Quais os partidos com mais deputados sociólogos? ===")
     query_sociologia_party(g)
-    print("=== 2. Qual a quantidade de academic titles por legislatura? ===")
+    print("\n=== 2. Qual a quantidade de títulos academicos por legislatura? ===")
     query_academic_titles_leg(g)
+    print("\n=== 3. Informações relevantes sobre círculos eleitorais com mais de 1M de votantes (segundo o WikiData), durante a XVII Legislatura ===")
+    query_leg_electorate_area(g)
 
 def main():
     g = Graph()
     g.parse("./resources/test.ttl", format="turtle")
-    query_leg_electorate_area(g)
+    #query_leg_electorate_area(g)
+    query_runner(g)
 
 if __name__ == "__main__":
     main()
