@@ -169,6 +169,81 @@ def query_party_efetivo_direito_leg(g: Graph):
         for party, total in parties:
             print(f"  {party} - {total} MPs with a Law habilitation")
 
+def query_mp_change_metadata(g: Graph):
+    # MPs who changed situation status - started Efetivo but ended differently
+    query = """
+    PREFIX : <http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX schema: <https://schema.org/>
+    SELECT ?name ?job ?party ?legDesc ?sitLabel
+    WHERE{
+        ?mop a ?MoP ;
+            schema:name ?name ;
+            :servedDuring ?ctx .
+        OPTIONAL {
+            ?mop schema:jobTitle ?job .
+        }
+        
+        ?ctx :legislature ?leg ;
+            :membership ?mem ;
+            :situation ?sit .
+        
+        ?leg rdfs:label ?legDesc .
+        FILTER(LANG(?legDesc) = 'pt')
+        
+        ?sit :situationType :Efetivo ;
+            schema:startDate ?start .
+        
+        # There is no earlier situation than this Efetivo one
+        FILTER NOT EXISTS {
+            ?ctx :situation ?otherSit1 .
+            ?otherSit1 schema:startDate ?otherStart1 .
+            FILTER(?otherStart1 < ?start)
+        }
+        
+        # The latest (most recent) situation must NOT be Efetivo
+        ?ctx :situation ?latestSit .
+        ?latestSit :situationType ?latestSitType ;
+            schema:startDate ?latestStart .
+        
+        FILTER NOT EXISTS {
+            ?ctx :situation ?evenLaterSit .
+            ?evenLaterSit schema:startDate ?evenLaterStart .
+            FILTER(?evenLaterStart > ?latestStart)
+        }
+        
+        FILTER(?latestSitType != :Efetivo)
+        
+        ?latestSitType skos:prefLabel ?sitLabel .
+        
+        ?mem :group ?group .
+        ?group skos:altLabel ?party .
+    }
+    ORDER BY ?legDesc ?party
+    """
+
+    results = {}
+    for row in g.query(query):
+        if row.legDesc not in results:
+            results[row.legDesc] = {}
+        if row.party not in results[row.legDesc]:
+            results[row.legDesc][row.party] = []
+        
+        job = row.job if row.job else "N/A"
+        results[row.legDesc][row.party].append({
+            'name': row.name,
+            'job': job,
+            'change': f"Efetivo -> {row.sitLabel}"
+        })
+    
+    for leg, parties in results.items():
+        print(f"\n{leg}:")
+        for party, mps in parties.items():
+            print(f"  {party}:")
+            for mp in mps:
+                print(f"    {mp['name']} - {mp['job']} - {mp['change']}")
+    
 
 def query_runner(g: Graph):
     print("=== 1. How many MP's with a Sociology Habilitation has each Parliamentary Group had? ===")
@@ -177,14 +252,15 @@ def query_runner(g: Graph):
     query_academic_titles_leg(g)
     print("\n=== 3. Relevant information retrieval about Electoral Circles with >1M electorate (according to WikiData), during the XVII Legislature ===")
     query_leg_electorate_area(g)
-    print("\n=== 4. Per Legislature, how many MPs per Parliamentary Group, whose most recent situation was as Effective, have a Law Habilitation ===")
+    print("\n=== 4. Per Legislature, how many MPs per Parliamentary Group, whose most recent situation was as Permanent, have a Law Habilitation ===")
     query_party_efetivo_direito_leg(g)
+    print("\n=== 5. Per Legislature, which MPs from which Parliamentary Group, started as Permanent but aren't permanent as the latest situation and what jobs do they have? ===")
+    query_mp_change_metadata(g)
 
 def main():
     g = Graph()
     g.parse("./resources/test.ttl", format="turtle")
     
-    #query_party_efetivo_direito_leg(g)
     query_runner(g)
 
 if __name__ == "__main__":
