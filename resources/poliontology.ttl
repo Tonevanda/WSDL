@@ -82,11 +82,17 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
               rdfs:range :Habilitation .
 
 
+###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/happenedInLegislature
+:happenedInLegislature rdf:type owl:ObjectProperty ,
+                                owl:FunctionalProperty ;
+                       rdfs:domain :LegislativeSession ;
+                       rdfs:range :Legislature .
+
+
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/legislature
 :legislature rdf:type owl:ObjectProperty ,
                       owl:FunctionalProperty ;
-             rdfs:domain :LegislativeSession ,
-                         :LegislatureContext ;
+             rdfs:domain :LegislatureContext ;
              rdfs:range :Legislature .
 
 
@@ -170,8 +176,7 @@ skos:prefLabel rdf:type owl:AnnotationProperty .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/LegislativeSession
-:LegislativeSession rdf:type owl:Class ;
-                    owl:disjointWith :LegislatureContext .
+:LegislativeSession rdf:type owl:Class .
 
 
 ###  http://www.semanticweb.org/tiago/ontologies/2025/11/poliontology/Legislature

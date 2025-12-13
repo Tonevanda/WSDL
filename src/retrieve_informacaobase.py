@@ -198,7 +198,7 @@ def build_legislative_session(xml_obj: XMLObject, g:Graph, leg_uri: URIRef):
         g.add((uri, SCHEMA.position, Literal(session, datatype=XSD.int)))
         g.add((uri, SCHEMA.startDate, Literal(items[0], datatype=XSD.date)))
         if items[1] is not None: g.add((uri, SCHEMA.endDate, Literal(items[1], datatype=XSD.date)))
-        g.add((uri, POLI.legislature, leg_uri))
+        g.add((uri, POLI.happenedInLegislature, leg_uri))
 
     return g
 

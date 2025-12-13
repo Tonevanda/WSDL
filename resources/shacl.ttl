@@ -159,7 +159,7 @@
     a sh:NodeShape ;
     sh:targetClass :LegislativeSession ;
     sh:property [
-        sh:path :legislature ;
+        sh:path :happenedInLegislature ;
         sh:class :Legislature ;
         sh:minCount 1 ;
         sh:maxCount 1 ;
