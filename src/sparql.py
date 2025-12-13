@@ -75,8 +75,6 @@ def query_leg_electorate_area(g: Graph):
                 :legislatures :XVII ;
                 owl:sameAs ?wd .
         
-        FILTER(LANG(?circleName) = 'pt')
-        
         SERVICE <https://query.wikidata.org/sparql> {
             ?wd wdt:P1831 ?electorate .
             FILTER(?electorate > 1000000)
@@ -87,17 +85,15 @@ def query_leg_electorate_area(g: Graph):
             }
         }
         
-        # Add data from your ontology
-        ?context :electoralCircle ?circle ;
-                 :legislature :XVII .
-        
-        ?mop :servedDuring ?context .
-        
-        OPTIONAL {
-            ?context :membership ?membership .
-            ?membership :group ?group .
-            ?group skos:altLabel ?party .
-        }
+        ?circle ^:electoralCircle ?context .
+        ?context :situation ?sit .
+        ?sit :situationType :Efetivo .
+
+        ?context :membership ?membership ;
+            ^:servedDuring ?mop .
+
+        ?membership :group ?group .
+        ?group skos:altLabel ?party .
         
         OPTIONAL {
             ?mop :hasAcademicTitle ?title .
