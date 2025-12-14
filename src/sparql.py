@@ -309,7 +309,7 @@ def query_runner(g: Graph):
 
 def main():
     g = Graph()
-    g.parse("./resources/test.ttl", format="turtle")
+    g.parse("./resources/poliontology_full.ttl", format="turtle")
     #query_ratio(g)
     query_runner(g)
 

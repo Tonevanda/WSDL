@@ -55,7 +55,7 @@ def main():
     print("Validation Results: \n", results_text)
 
     # Save the file
-    g.serialize(destination="./resources/test.ttl", format="turtle")
+    g.serialize(destination="./resources/poliontology_full.ttl", format="turtle")
 
 if __name__ == "__main__":
     main()
