@@ -1,6 +1,8 @@
 Also refer to README.md for tutorial.
 
-The project was developed using uv, therefore the easiest option to run it is to also it.
+The project was developed using uv, therefore the easiest way to run the project is to install uv first:
+
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 With it installed, just run:
 uv sync
