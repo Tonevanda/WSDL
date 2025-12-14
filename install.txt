@@ -1,0 +1,13 @@
+Also refer to README.md for tutorial.
+
+The project was developed using uv, therefore the easiest option to run it is to also it.
+
+With it installed, just run:
+uv sync
+uv run src/main.py
+
+To run our SparQL queries run:
+uv run src/sparql.py
+
+Main file parses the XML files and adds entities to the correct Classes, completing with the correct information
+
