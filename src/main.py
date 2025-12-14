@@ -55,6 +55,7 @@ def main():
     print("Validation Results: \n", results_text)
 
     # Save the file
+    print(f'{len(g)} triples serialized to poliontology_full.ttl')
     g.serialize(destination="./resources/poliontology_full.ttl", format="turtle")
 
 if __name__ == "__main__":
