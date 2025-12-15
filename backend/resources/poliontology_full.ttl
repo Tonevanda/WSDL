@@ -38781,6 +38781,7 @@ Empresa de Serviços com um sócio único, pertença do Centro de Bem-Estar Soci
                     schema:endDate "2025-06-02"^^xsd:date ;
                     schema:startDate "2024-03-26"^^xsd:date ] ] ;
     owl:sameAs <https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=8660> ;
+    schema:gender "M"^^xsd:string ;
     schema:name "Miguel António Taveira Franco Sousa Arruda"^^xsd:string .
 
 :Miguel_Baptista_Miranda_Correia a :MoP ;
