@@ -30,6 +30,7 @@ def build_habilitations(xml_obj: XMLObject, g: Graph, mop_uri: URIRef):
             g.add((hab_node, RDF.type, POLI.Habilitation))
             g.add((hab_node, RDFS.label, Literal(hab_des, datatype=XSD.string)))
             g.add((hab_node, POLI.tipoId, Literal(int(float(hab_tipo_id)), datatype=XSD.int)))
+            g.add((hab_node, DCTERMS.identifier, Literal(int(float(hab_id)), datatype=XSD.int)))
             
             # Link to MoP
             g.add((mop_uri, POLI.habilitation, hab_node))

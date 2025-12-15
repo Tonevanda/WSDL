@@ -125,22 +125,6 @@ def get_legislative_session_info(xml_obj: XMLObject):
 
     return session_map
 
-def get_mp_info(xml_obj: XMLObject):
-    def get_attribute(session: XMLObject, type: str):
-        element = session.find_first_element_by_name(type)
-        return element.get_string() if element else None
-
-    element = xml_obj.find_first_element_by_name('Deputados')
-
-    mps = {}
-    for mp in element.find_elements_by_name("DadosDeputadoOrgaoPlenario"):
-        id = get_attribute(xml_obj, 'DepId')
-        bid = get_attribute(xml_obj, 'DepCadId')
-        parliamentaryName = get_attribute(xml_obj, 'DepNomeParlamentar')
-        name = get_attribute(xml_obj, 'DepNomeCompleto')
-
-    pass
-
 def build_legislature(xml_obj:XMLObject, g:Graph):
     legislature_element = xml_obj.find_first_element_by_name('DetalheLegislatura')
 
