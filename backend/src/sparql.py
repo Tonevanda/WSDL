@@ -1,4 +1,7 @@
 from rdflib import *
+import json
+import sys
+import os
 
 def query_sociologia_party(g: Graph):
     # Quais os partidos com mais deputados sociólogos
@@ -26,8 +29,14 @@ def query_sociologia_party(g: Graph):
     ORDER BY DESC(?total)
     """
 
+    results = []
     for row in g.query(query):
-        print(f"{row.party} has {row.total} MPs with a Sociology Habilitation")
+        results.append({
+            "party": str(row.party),
+            "total": int(row.total),
+            "description": f"{row.party} has {row.total} MPs with a Sociology Habilitation"
+        })
+    return results
     
 def query_academic_titles_leg(g: Graph):
      # Qual a quantidade de academic titles por legislatura
@@ -50,8 +59,14 @@ def query_academic_titles_leg(g: Graph):
     ORDER BY DESC(?total)
     """
     
+    results = []
     for row in g.query(query):
-        print(f"{row.legDesc} has a total of {row.total} academic titles")
+        results.append({
+            "legislature": str(row.legDesc),
+            "total": int(row.total),
+            "description": f"{row.legDesc} has a total of {row.total} academic titles"
+        })
+    return results
 
 def query_leg_electorate_area(g: Graph):
     # Regiões com mais eleitores e a respetiva área com estatísticas dos deputados
@@ -108,15 +123,19 @@ def query_leg_electorate_area(g: Graph):
     ORDER BY DESC(?electorate)
     """
    
+    results = []
     for row in g.query(query_area):
         area = f"{int(row.area):,} km²" if row.area else "N/A"
-        print(f"\n{row.circleName}")
-        print(f"  Voters: {int(row.electorate):,}")
-        print(f"  Area: {area}")
-        print(f"  Permanent MPs: {row.totalMoPs}")
-        print(f"  Academic Titles: {row.totalTitles}")
-        print(f"  Duties: {row.totalDuties}")
-        print(f"  Parliamentary Groups: {row.parties}")
+        results.append({
+            "circleName": str(row.circleName),
+            "voters": int(row.electorate),
+            "area": area,
+            "permanentMPs": int(row.totalMoPs),
+            "academicTitles": int(row.totalTitles),
+            "duties": int(row.totalDuties),
+            "parties": str(row.parties)
+        })
+    return results
 
 def query_party_efetivo_direito_leg(g: Graph):
     # Por partido quantos deputados efetivos tem habilitacao "direito" por legislatura
@@ -162,12 +181,12 @@ def query_party_efetivo_direito_leg(g: Graph):
     for row in g.query(query):
         if row.legDesc not in results:
             results[row.legDesc] = []
-        results[row.legDesc].append((row.party, row.total))
+        results[row.legDesc].append({
+            "party": str(row.party),
+            "total": int(row.total)
+        })
     
-    for leg, parties in results.items():
-        print(f"\n{leg}:")
-        for party, total in parties:
-            print(f"  {party} - {total} MPs with a Law habilitation")
+    return results
 
 def query_mp_change_metadata(g: Graph):
     # MPs who changed situation status - started Efetivo but ended differently
@@ -232,17 +251,12 @@ def query_mp_change_metadata(g: Graph):
         
         job = row.job if row.job else "N/A"
         results[row.legDesc][row.party].append({
-            'name': row.name,
-            'job': job,
+            'name': str(row.name),
+            'job': str(job),
             'change': f"Efetivo -> {row.sitLabel}"
         })
     
-    for leg, parties in results.items():
-        print(f"\n{leg}:")
-        for party, mps in parties.items():
-            print(f"  {party}:")
-            for mp in mps:
-                print(f"    {mp['name']} - {mp['job']} - {mp['change']}")
+    return results
     
 def query_ratio(g: Graph):
     query = """
@@ -278,8 +292,7 @@ def query_ratio(g: Graph):
     ORDER BY ASC(?ratio)
     """
     
-    print(f"{'Parliamentary Group':<30} {'Men':<10} {'Women':<10} {'Total':<10} {'Ratio (M:F)'}")
-    print("=" * 80)
+    results = []
     
     for row in g.query(query):
         total_male = int(row.totalMale)
@@ -288,30 +301,90 @@ def query_ratio(g: Graph):
         
         if total_female > 0:
             ratio = f"{total_male}:{total_female} ({total_male/total_female:.2f}:1)"
+            ratio_numeric = round(total_male/total_female, 2)
         else:
             ratio = f"{total_male}:0"
+            ratio_numeric = total_male
         
-        print(f"{row.party:<30} {total_male:<10} {total_female:<10} {total:<10} {ratio}")
+        results.append({
+            "party": str(row.party),
+            "men": total_male,
+            "women": total_female,
+            "total": total,
+            "ratio": ratio,
+            "ratioNumeric": ratio_numeric
+        })
+    
+    return results
 
-def query_runner(g: Graph):
-    print("=== 1. How many MP's with a Sociology Habilitation has each Parliamentary Group had? ===")
-    query_sociologia_party(g)
-    print("\n=== 2. How many Academic Titles are in each Legislature? ===")
-    query_academic_titles_leg(g)
-    print("\n=== 3. Relevant information retrieval about Electoral Circles with >1M electorate (according to WikiData), during the XVII Legislature ===")
-    query_leg_electorate_area(g)
-    print("\n=== 4. Per Legislature, how many MPs per Parliamentary Group, whose most recent situation was as Permanent, have a Law Habilitation ===")
-    query_party_efetivo_direito_leg(g)
-    print("\n=== 5. Per Legislature, which MPs from which Parliamentary Group, started as Permanent but aren't permanent as the latest situation and what jobs do they have? ===")
-    query_mp_change_metadata(g)
-    print("\n=== 6. Overall Ratio Man vs Woman per Parliamentary Group ===")
-    query_ratio(g)
+def query_runner(g: Graph, query_number: int):
+    """
+    Run a specific query based on the query_number (1-6).
+    Returns a dictionary with query metadata and results.
+    """
+    queries = {
+        1: {
+            "title": "How many MP's with a Sociology Habilitation has each Parliamentary Group had?",
+            "function": query_sociologia_party
+        },
+        2: {
+            "title": "How many Academic Titles are in each Legislature?",
+            "function": query_academic_titles_leg
+        },
+        3: {
+            "title": "Relevant information retrieval about Electoral Circles with >1M electorate (according to WikiData), during the XVII Legislature",
+            "function": query_leg_electorate_area
+        },
+        4: {
+            "title": "Per Legislature, how many MPs per Parliamentary Group, whose most recent situation was as Permanent, have a Law Habilitation",
+            "function": query_party_efetivo_direito_leg
+        },
+        5: {
+            "title": "Per Legislature, which MPs from which Parliamentary Group, started as Permanent but aren't permanent as the latest situation and what jobs do they have?",
+            "function": query_mp_change_metadata
+        },
+        6: {
+            "title": "Overall Ratio Man vs Woman per Parliamentary Group",
+            "function": query_ratio
+        }
+    }
+    
+    if query_number not in queries:
+        return {
+            "error": f"Invalid query number. Please provide a number between 1 and 6.",
+            "query_number": query_number
+        }
+    
+    query_info = queries[query_number]
+    results = query_info["function"](g)
+    
+    return {
+        "query_number": query_number,
+        "title": query_info["title"],
+        "results": results
+    }
 
 def main():
+    if len(sys.argv) < 2:
+        print("Usage: python sparql.py <query_number>")
+        print("Query numbers: 1-6")
+        sys.exit(1)
+    
+    try:
+        query_number = int(sys.argv[1])
+    except ValueError:
+        print("Error: Query number must be an integer between 1 and 6")
+        sys.exit(1)
+    
     g = Graph()
-    g.parse("./resources/poliontology_full.ttl", format="turtle")
-    #query_ratio(g)
-    query_runner(g)
+    # Get the directory where this script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    # Build path to the resources directory (one level up, then into resources)
+    ttl_path = os.path.join(os.path.dirname(script_dir), 'resources', 'poliontology_full.ttl')
+    g.parse(ttl_path, format="turtle")
+    
+    result = query_runner(g, query_number)
+    print(json.dumps(result, indent=2, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()
