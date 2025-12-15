@@ -31,8 +31,8 @@ function Home() {
   if (loading) {
     return (
       <div className="home-container">
-        <h1>WSDL Query Interface</h1>
-        <p>Loading queries...</p>
+        <h1>🔍 WSDL Query Interface</h1>
+        <p className="subtitle">Loading queries...</p>
       </div>
     );
   }
@@ -40,16 +40,18 @@ function Home() {
   if (error) {
     return (
       <div className="home-container">
-        <h1>WSDL Query Interface</h1>
-        <div className="error-message">{error}</div>
+        <h1>🔍 WSDL Query Interface</h1>
+        <div className="error-message">
+          ⚠️ {error}
+        </div>
       </div>
     );
   }
 
   return (
     <div className="home-container">
-      <h1>WSDL Query Interface</h1>
-      <p className="subtitle">Select a query to run:</p>
+      <h1>🔍 WSDL Query Interface</h1>
+      <p className="subtitle">Select a SPARQL query to explore Portuguese parliamentary data</p>
       
       <div className="queries-grid">
         {queries.map((query) => (
